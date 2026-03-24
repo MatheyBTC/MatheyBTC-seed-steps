@@ -45,7 +45,7 @@
     }
     .phase-tab {
       padding:7px 16px; font-size:13px; font-weight:700;
-      border-radius:20px; white-space:nowrap; cursor:default;
+      border-radius:4px; white-space:nowrap; cursor:default;
       border:2px solid transparent; transition:all 0.2s;
       opacity:0.45; letter-spacing:0.2px;
     }
@@ -177,10 +177,10 @@
 
   <!-- PHASE PROGRESS BAR -->
   <div class="phase-bar">
-    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1">🔵 Seed BIP39</div>
-    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2">🟡 Árbol HD</div>
-    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3">🟠 Derivación</div>
-    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4">⚪ Dirección</div>
+    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1">Seed BIP39</div>
+    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2">Árbol HD</div>
+    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3">Derivación</div>
+    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4">Dirección</div>
   </div>
 
   <main class="main">
@@ -3127,15 +3127,15 @@ const BIP39_WORDLIST = [
     var TRANSLATIONS = {
       es: {
         'mode-a': '📖 Ejemplo', 'mode-b': '⚡ Generar',
-        'phase-1': '🔵 Seed BIP39', 'phase-2': '🟡 Árbol HD',
-        'phase-3': '🟠 Derivación', 'phase-4': '⚪ Dirección',
-        'phase-1-title': '🔵 Fase 1 — Crear Seed (BIP39)',
+        'phase-1': 'Seed BIP39', 'phase-2': 'Árbol HD',
+        'phase-3': 'Derivación', 'phase-4': 'Dirección',
+        'phase-1-title': 'Fase 1 — Crear Seed (BIP39)',
         'phase-1-desc': 'Pasos 1–7: de bits aleatorios a 12 palabras + root seed',
-        'phase-2-title': '🟡 Fase 2 — Árbol HD (BIP32)',
+        'phase-2-title': 'Fase 2 — Árbol HD (BIP32)',
         'phase-2-desc': 'Pasos 8–13: de root seed a master node + xprv/xpub',
-        'phase-3-title': '🟠 Fase 3 — Derivar Claves',
+        'phase-3-title': 'Fase 3 — Derivar Claves',
         'phase-3-desc': "Pasos 14–19: de xprv a clave pública hija vía m/84'/0'/0'/0/0",
-        'phase-4-title': '⚪ Fase 4 — Construir Dirección',
+        'phase-4-title': 'Fase 4 — Construir Dirección',
         'phase-4-desc': 'Pasos 20–25: de pubkey a dirección Bitcoin bc1q...',
         'passphrase-label': 'Passphrase opcional (BIP39)',
         'passphrase-placeholder': 'Dejar vacío para el estándar',
@@ -3195,15 +3195,15 @@ const BIP39_WORDLIST = [
       },
       en: {
         'mode-a': '📖 Example', 'mode-b': '⚡ Generate',
-        'phase-1': '🔵 BIP39 Seed', 'phase-2': '🟡 HD Tree',
-        'phase-3': '🟠 Derivation', 'phase-4': '⚪ Address',
-        'phase-1-title': '🔵 Phase 1 — Create Seed (BIP39)',
+        'phase-1': 'BIP39 Seed', 'phase-2': 'HD Tree',
+        'phase-3': 'Derivation', 'phase-4': 'Address',
+        'phase-1-title': 'Phase 1 — Create Seed (BIP39)',
         'phase-1-desc': 'Steps 1–7: from random bits to 12 words + root seed',
-        'phase-2-title': '🟡 Phase 2 — HD Tree (BIP32)',
+        'phase-2-title': 'Phase 2 — HD Tree (BIP32)',
         'phase-2-desc': 'Steps 8–13: from root seed to master node + xprv/xpub',
-        'phase-3-title': '🟠 Phase 3 — Derive Keys',
+        'phase-3-title': 'Phase 3 — Derive Keys',
         'phase-3-desc': "Steps 14–19: from xprv to child public key via m/84'/0'/0'/0/0",
-        'phase-4-title': '⚪ Phase 4 — Build Address',
+        'phase-4-title': 'Phase 4 — Build Address',
         'phase-4-desc': 'Steps 20–25: from pubkey to Bitcoin address bc1q...',
         'passphrase-label': 'Optional passphrase (BIP39)',
         'passphrase-placeholder': 'Leave empty for standard',
