@@ -148,7 +148,9 @@
       background:var(--bg3); border:1px solid var(--blanco);
       border-radius:10px; padding:20px; text-align:center; margin-top:16px;
     }
-    .address-result .addr { font-size:15px; font-family:monospace; color:var(--blanco); word-break:break-all; }
+    .address-result .addr { font-size:18px; font-family:monospace; word-break:break-all; letter-spacing:3px; }
+    .address-result .addr .ac { color:var(--blanco); }
+    .address-result .addr .ac2 { color:#94a3b8; }
     .address-result .addr-label { font-size:11px; color:var(--text2); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
 
     /* MOBILE */
@@ -2988,6 +2990,13 @@ const BIP39_WORDLIST = [
     let currentLang = 'es';
     let currentMode = 'a';
 
+    function formatAddress(addr) {
+      if (!addr) return '—';
+      return addr.split('').map(function(c, i) {
+        var group = Math.floor(i / 4);
+        return '<span class="' + (group % 2 === 0 ? 'ac' : 'ac2') + '">' + c + '</span>';
+      }).join('');
+    }
     function toHex(bytes) {
       return Array.from(bytes).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
     }
@@ -3413,7 +3422,7 @@ const BIP39_WORDLIST = [
               }).join('')+'</div>',
             'Bech32 detecta errores de tipeo mejor que Base58. Bech32m corrige un bug de Bech32 para witness v1+ (Taproot). Base58Check usa checksum de 4 bytes al final.')
         + makeCard(25,4,'s25-title','s25-desc',
-            '<div class="address-result"><div class="addr-label" data-i18n="s25-val-label">' + T['s25-val-label'] + '</div><div id="v-address" class="addr">' + (d.address||'bc1q...') + '</div></div>',
+            '<div class="address-result"><div class="addr-label" data-i18n="s25-val-label">' + T['s25-val-label'] + '</div><div id="v-address" class="addr">' + formatAddress(d.address||'bc1q...') + '</div></div>',
             "La dirección es segura de compartir. No revela la clave privada, el mnemónico, ni el camino de derivación. Para una nueva cuenta, incrementá el índice (0→1→2...).");
 
       container.innerHTML = html;
