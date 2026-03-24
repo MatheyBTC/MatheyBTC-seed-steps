@@ -3,37 +3,231 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MatheyBTC — De Entropía a Dirección Bitcoin</title>
+  <title>₿ MatheyBTC — De Entropía a Dirección Bitcoin</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #0a0a0a;
-      color: #f1f5f9;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
+    :root {
+      --bg: #0a0a0a; --bg2: #111827; --bg3: #1e293b;
+      --border: #334155; --text: #f1f5f9; --text2: #94a3b8;
+      --celeste: #67e8f9; --amarillo: #facc15;
+      --naranja: #fb923c; --blanco: #f1f5f9;
+      --green: #4ade80; --red: #f87171;
     }
-    .logo { font-size: 48px; }
-    h1 { font-size: 22px; color: #67e8f9; font-weight: 700; text-align: center; }
-    p { color: #94a3b8; font-size: 15px; text-align: center; max-width: 400px; }
-    .badge {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-size: 13px;
-      color: #facc15;
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; }
+
+    /* HEADER */
+    .header {
+      position:sticky; top:0; z-index:100;
+      background:var(--bg2); border-bottom:1px solid var(--border);
+      padding:10px 24px; display:flex; align-items:center;
+      justify-content:space-between; flex-wrap:wrap; gap:8px;
+    }
+    .header-logo { font-size:20px; font-weight:800; color:var(--amarillo); text-decoration:none; }
+    .header-links { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+    .header-links a { color:var(--text2); font-size:13px; text-decoration:none; }
+    .header-links a:hover { color:var(--text); }
+    .header-controls { display:flex; gap:8px; align-items:center; }
+
+    /* TOGGLE BUTTONS */
+    .toggle-btn {
+      padding:5px 14px; border-radius:20px; border:1px solid var(--border);
+      background:transparent; color:var(--text2); font-size:12px;
+      cursor:pointer; font-weight:600; transition:all 0.2s;
+    }
+    .toggle-btn.active { background:var(--amarillo); color:#000; border-color:var(--amarillo); }
+
+    /* PHASE PROGRESS BAR */
+    .phase-bar {
+      position:sticky; top:49px; z-index:99;
+      background:var(--bg2); border-bottom:1px solid var(--border);
+      display:flex; padding:0 24px; overflow-x:auto;
+    }
+    .phase-tab {
+      padding:8px 16px; font-size:12px; font-weight:700;
+      border-bottom:3px solid transparent; cursor:default;
+      opacity:0.4; transition:opacity 0.2s; white-space:nowrap;
+    }
+    .phase-tab.active { opacity:1; }
+    .phase-tab[data-phase="1"] { color:var(--celeste); }
+    .phase-tab[data-phase="1"].active { border-color:var(--celeste); }
+    .phase-tab[data-phase="2"] { color:var(--amarillo); }
+    .phase-tab[data-phase="2"].active { border-color:var(--amarillo); }
+    .phase-tab[data-phase="3"] { color:var(--naranja); }
+    .phase-tab[data-phase="3"].active { border-color:var(--naranja); }
+    .phase-tab[data-phase="4"] { color:var(--blanco); }
+    .phase-tab[data-phase="4"].active { border-color:var(--blanco); }
+
+    /* MAIN CONTENT */
+    .main { max-width:760px; margin:0 auto; padding:32px 20px 80px; }
+
+    /* SECURITY BANNER */
+    .security-banner {
+      display:none; background:#1c1207; border:1px solid #854d0e;
+      border-radius:8px; padding:12px 16px; margin-bottom:24px;
+      font-size:13px; color:#fed7aa; line-height:1.6;
+    }
+    .security-banner.visible { display:block; }
+
+    /* STEP CARD */
+    .step-card {
+      border-radius:10px; background:var(--bg2);
+      border:1px solid var(--border); margin-bottom:8px;
+      border-left:4px solid transparent; padding:20px;
+    }
+    .step-card[data-phase="1"] { border-left-color:var(--celeste); }
+    .step-card[data-phase="2"] { border-left-color:var(--amarillo); }
+    .step-card[data-phase="3"] { border-left-color:var(--naranja); }
+    .step-card[data-phase="4"] { border-left-color:var(--blanco); }
+
+    .step-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .step-badge {
+      width:28px; height:28px; border-radius:50%; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:800; color:#000;
+    }
+    .step-card[data-phase="1"] .step-badge { background:var(--celeste); }
+    .step-card[data-phase="2"] .step-badge { background:var(--amarillo); }
+    .step-card[data-phase="3"] .step-badge { background:var(--naranja); }
+    .step-card[data-phase="4"] .step-badge { background:var(--blanco); }
+
+    .step-title { font-size:15px; font-weight:700; }
+    .step-desc { font-size:13px; color:var(--text2); margin-bottom:14px; line-height:1.6; }
+
+    /* VALUE BOX */
+    .value-box {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:6px; padding:12px 14px; font-family:monospace;
+      font-size:13px; word-break:break-all; line-height:1.7;
+    }
+    .value-label {
+      font-size:11px; color:var(--text2); margin-bottom:4px;
+      font-family:'Segoe UI',sans-serif; font-weight:600;
+      text-transform:uppercase; letter-spacing:0.5px;
+    }
+    .hl { font-weight:700; }
+    .step-card[data-phase="1"] .hl { color:var(--celeste); }
+    .step-card[data-phase="2"] .hl { color:var(--amarillo); }
+    .step-card[data-phase="3"] .hl { color:var(--naranja); }
+    .step-card[data-phase="4"] .hl { color:var(--blanco); }
+
+    /* TECHNICAL EXPAND */
+    .tech-toggle {
+      margin-top:12px; background:none; border:1px solid var(--border);
+      color:var(--text2); font-size:12px; padding:4px 10px;
+      border-radius:4px; cursor:pointer;
+    }
+    .tech-toggle:hover { color:var(--text); border-color:var(--text2); }
+    .tech-content {
+      display:none; margin-top:10px; padding:12px;
+      background:var(--bg3); border-radius:6px;
+      font-size:12px; color:var(--text2); line-height:1.8;
+      border-left:2px solid var(--border);
+    }
+    .tech-content.open { display:block; }
+
+    /* ARROW BETWEEN STEPS */
+    .step-arrow { text-align:center; color:var(--text2); font-size:18px; margin:2px 0; }
+
+    /* PHASE HEADER */
+    .phase-header { padding:24px 0 12px; margin-bottom:8px; border-bottom:1px solid var(--border); }
+    .phase-header h2 { font-size:17px; font-weight:800; }
+    .phase-header p { font-size:13px; color:var(--text2); margin-top:4px; }
+
+    /* PASSPHRASE FIELD */
+    .passphrase-row { margin-bottom:24px; }
+    .passphrase-row label { font-size:12px; color:var(--text2); display:block; margin-bottom:6px; font-weight:600; }
+    .passphrase-row input {
+      background:var(--bg3); border:1px solid var(--border); color:var(--text);
+      padding:8px 12px; border-radius:6px; font-size:14px; width:100%; max-width:400px;
+    }
+
+    /* FINAL ADDRESS */
+    .address-result {
+      background:var(--bg3); border:1px solid var(--blanco);
+      border-radius:10px; padding:20px; text-align:center; margin-top:16px;
+    }
+    .address-result .addr { font-size:15px; font-family:monospace; color:var(--blanco); word-break:break-all; }
+    .address-result .addr-label { font-size:11px; color:var(--text2); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
+
+    /* MOBILE */
+    @media (max-width:600px) {
+      .header { padding:8px 12px; }
+      .header-links { display:none; }
+      .main { padding:16px 12px 60px; }
+      .phase-tab { padding:8px 10px; font-size:11px; }
+      .step-card { padding:14px; }
+      .value-box { font-size:11px; }
     }
   </style>
 </head>
 <body>
-  <div class="logo">₿</div>
-  <h1>De Entropía a Dirección Bitcoin</h1>
-  <p>Explainer interactivo de los 25 pasos del proceso Bitcoin — próximamente.</p>
-  <div class="badge">🚧 En construcción</div>
+  <!-- HEADER -->
+  <header class="header">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="#" class="header-logo">₿ MatheyBTC</a>
+      <nav class="header-links">
+        <a href="https://matheybtc.github.io/MatheyBTC-invest-BTC/">Invest DCA</a>
+        <a href="https://matheybtc.github.io/MatheyBTC-HW-list/">HW List</a>
+      </nav>
+    </div>
+    <div class="header-controls">
+      <button class="toggle-btn active" id="btn-mode-a" onclick="setMode('a')" data-i18n="mode-a">📖 Ejemplo</button>
+      <button class="toggle-btn" id="btn-mode-b" onclick="setMode('b')" data-i18n="mode-b">⚡ Generar</button>
+      <button class="toggle-btn" id="btn-lang" onclick="toggleLang()">EN</button>
+    </div>
+  </header>
+
+  <!-- PHASE PROGRESS BAR -->
+  <div class="phase-bar">
+    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1">🔵 Seed BIP39</div>
+    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2">🟡 Árbol HD</div>
+    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3">🟠 Derivación</div>
+    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4">⚪ Dirección</div>
+  </div>
+
+  <main class="main">
+    <!-- SECURITY BANNER -->
+    <div class="security-banner" id="security-banner">
+      <span data-i18n="security-text">⚠️ Solo educativo. No uses esta herramienta para guardar fondos reales. Las claves generadas son visibles en la memoria del browser y en DevTools. Si copiás palabras o claves, el portapapeles puede ser leído por otras aplicaciones. Nada se envía a ningún servidor — pero extensiones del browser pueden leer el contenido de la página. Para máxima seguridad, usá un dispositivo air-gapped sin extensiones.</span>
+    </div>
+
+    <!-- PASSPHRASE -->
+    <div class="passphrase-row">
+      <label data-i18n="passphrase-label">Passphrase opcional (BIP39)</label>
+      <input type="text" id="passphrase-input"
+             placeholder="Dejar vacío para el estándar"
+             data-i18n-placeholder="passphrase-placeholder"
+             oninput="onPassphraseChange()">
+    </div>
+
+    <!-- STEPS INJECTED BY JS -->
+    <div id="steps-container">
+      <div style="color:var(--text2);text-align:center;padding:40px">Cargando...</div>
+    </div>
+  </main>
+
+  <script>
+    let currentLang = 'es';
+    let currentMode = 'a';
+
+    function setMode(m) {
+      currentMode = m;
+      document.getElementById('btn-mode-a').classList.toggle('active', m === 'a');
+      document.getElementById('btn-mode-b').classList.toggle('active', m === 'b');
+      document.getElementById('security-banner').classList.toggle('visible', m === 'b');
+      if (typeof renderSteps === 'function') renderSteps();
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === 'es' ? 'en' : 'es';
+      document.getElementById('btn-lang').textContent = currentLang === 'es' ? 'EN' : 'ES';
+      if (typeof applyLang === 'function') applyLang();
+    }
+
+    // Stubs — populated in later tasks
+    function applyLang() {}
+    function renderSteps() {}
+    function onPassphraseChange() {}
+  </script>
 </body>
 </html>
