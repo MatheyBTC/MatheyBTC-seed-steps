@@ -3054,9 +3054,10 @@ const BIP39_WORDLIST = [
       var hashBytes = sha256(entropyBytes);
       var checksumBits = (hashBytes[0] >> 4).toString(2).padStart(4, '0');
       result.checksumBit = checksumBits;
-      var allBits = '';
-      for (var bi = 0; bi < entropyBytes.length; bi++) allBits += entropyBytes[bi].toString(2).padStart(8, '0');
-      allBits += checksumBits;
+      var entropyBits = '';
+      for (var bi = 0; bi < entropyBytes.length; bi++) entropyBits += entropyBytes[bi].toString(2).padStart(8, '0');
+      result.entropyBits = entropyBits;
+      var allBits = entropyBits + checksumBits;
       var segs = [];
       for (var si = 0; si < 12; si++) segs.push(allBits.slice(si*11, si*11+11));
       result.bits132 = segs.join(' ');
@@ -3178,7 +3179,7 @@ const BIP39_WORDLIST = [
         's23-desc': 'El scriptPubKey define las condiciones para gastar los fondos. Para P2WPKH es: OP_0 + HASH160.',
         's24-desc': 'El scriptPubKey se codifica en formato legible. BIP84 usa Bech32 (bc1q), BIP86 usa Bech32m (bc1p).',
         's25-desc': 'La dirección Bitcoin es el resultado final. Es segura de compartir — no revela ningún dato sensible.',
-        's1-val-label': 'Entropía (hex)', 's1-note': '128 bits · 16 bytes · solo modo Generar',
+        's1-val-label': 'Entropía (128 bits)', 's1-note': '16 bytes · 128 bits aleatorios · solo modo Generar',
         's2-val-label': 'SHA256(entropía) → checksum (4 bits)',
         's3-val-label': '132 bits → 12 segmentos de 11 bits',
         's4-val-label': 'Índices → Palabras BIP39',
@@ -3246,7 +3247,7 @@ const BIP39_WORDLIST = [
         's23-desc': 'The scriptPubKey defines the spending conditions. For P2WPKH it is: OP_0 + HASH160.',
         's24-desc': 'The scriptPubKey is encoded in human-readable format. BIP84 uses Bech32 (bc1q), BIP86 uses Bech32m (bc1p).',
         's25-desc': 'The Bitcoin address is the final result. Safe to share — it reveals no sensitive information.',
-        's1-val-label': 'Entropy (hex)', 's1-note': '128 bits · 16 bytes · Generate mode only',
+        's1-val-label': 'Entropy (128 bits)', 's1-note': '16 bytes · 128 random bits · Generate mode only',
         's2-val-label': 'SHA256(entropy) → checksum (4 bits)',
         's3-val-label': '132 bits → 12 segments of 11 bits',
         's4-val-label': 'Indices → BIP39 Words',
@@ -3331,7 +3332,7 @@ const BIP39_WORDLIST = [
         + '<p data-i18n="phase-1-desc">' + T['phase-1-desc'] + '</p>'
         + '</div>'
         + makeCard(1,1,'s1-title','s1-desc',
-            '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><span class="hl" id="v-entropy">' + (d.entropy||'—') + '</span><br><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
+            '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><span class="hl" id="v-entropy" style="word-break:break-all;letter-spacing:1px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).join(' ') + '</span><br><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
             'CSPRNG genera 16 bytes usando window.crypto.getRandomValues(). Nunca reutilizar, nunca predecir. 2^128 combinaciones posibles.')
         + makeCard(2,1,'s2-title','s2-desc',
             '<div class="value-label" data-i18n="s2-val-label">' + T['s2-val-label'] + '</div><span id="v-checksum" class="hl">' + (d.checksumBit||'0000') + '</span><span style="color:var(--text2)"> ← 4 bits de checksum</span>',
