@@ -2616,7 +2616,11 @@ function randomBytes(bytesLength = 32) {
   <!-- Noble library global normalization -->
   <script>
     // secp256k1: browserify bundle exposes as window.nobleSecp256k1; alias to window.secp
-    if (typeof nobleSecp256k1 !== 'undefined') window.secp = nobleSecp256k1;
+    if (typeof nobleSecp256k1 !== 'undefined') {
+      window.secp = nobleSecp256k1;
+    } else {
+      console.error('[MatheyBTC] secp256k1 library failed to load');
+    }
     // noble/hashes: bundle exposes as window.nobleHashes; destructure to individual globals
     if (typeof nobleHashes !== 'undefined') {
       window.sha256     = nobleHashes.sha256;
@@ -2628,6 +2632,8 @@ function randomBytes(bytesLength = 32) {
       window.utf8ToBytes = nobleHashes.utf8ToBytes;
       window.bytesToHex  = nobleHashes.bytesToHex;
       window.hexToBytes  = nobleHashes.hexToBytes;
+    } else {
+      console.error('[MatheyBTC] noble/hashes library failed to load');
     }
   </script>
 
