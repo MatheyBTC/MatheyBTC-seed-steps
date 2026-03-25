@@ -137,9 +137,13 @@
     .step-arrow { text-align:center; color:var(--text2); font-size:18px; margin:2px 0; }
 
     /* PHASE HEADER */
-    .phase-header { padding:24px 0 12px; margin-bottom:8px; border-bottom:1px solid var(--border); }
-    .phase-header h2 { font-size:17px; font-weight:800; }
+    .phase-header { padding:24px 0 12px; margin-bottom:8px; border-bottom:1px solid var(--border); cursor:pointer; user-select:none; }
+    .phase-header h2 { font-size:17px; font-weight:800; display:flex; align-items:center; justify-content:space-between; }
     .phase-header p { font-size:13px; color:var(--text2); margin-top:4px; }
+    .ph-chevron { font-size:12px; opacity:0.6; transition:transform 0.25s; flex-shrink:0; }
+    .ph-collapsed .ph-chevron { transform:rotate(-90deg); }
+    .phase-content { overflow:hidden; transition:max-height 0.35s ease; max-height:20000px; }
+    .phase-content.ph-collapsed { max-height:0; }
 
     /* PASSPHRASE FIELD */
     .passphrase-row { margin-bottom:24px; }
@@ -187,10 +191,10 @@
 
   <!-- PHASE PROGRESS BAR -->
   <div class="phase-bar">
-    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1" onclick="var el=document.getElementById('step-1');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}">Seed BIP39</div>
-    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2" onclick="var el=document.getElementById('step-8');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}">Árbol HD</div>
-    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3" onclick="var el=document.getElementById('step-14');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}">Derivación</div>
-    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4" onclick="var el=document.getElementById('step-20');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}">Dirección</div>
+    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1" onclick="expandPhase(1);setTimeout(function(){var el=document.getElementById('step-1');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}},50)">Seed BIP39</div>
+    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2" onclick="expandPhase(2);setTimeout(function(){var el=document.getElementById('step-8');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}},50)">Árbol HD</div>
+    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3" onclick="expandPhase(3);setTimeout(function(){var el=document.getElementById('step-14');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}},50)">Derivación</div>
+    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4" onclick="expandPhase(4);setTimeout(function(){var el=document.getElementById('step-20');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}},50)">Dirección</div>
   </div>
 
   <main class="main">
@@ -3374,10 +3378,11 @@ const BIP39_WORDLIST = [
       var h160 = d.hash160 || '&lt;hash160&gt;';
 
       var html = ''
-        + '<div class="phase-header" data-step-start="1">'
-        + '<h2 data-i18n="phase-1-title">' + T['phase-1-title'] + '</h2>'
+        + '<div class="phase-header" data-phase-id="1" data-step-start="1" onclick="togglePhase(1)">'
+        + '<h2 data-i18n="phase-1-title">' + T['phase-1-title'] + ' <span class="ph-chevron">▼</span></h2>'
         + '<p data-i18n-html="phase-1-desc">' + T['phase-1-desc'] + '</p>'
         + '</div>'
+        + '<div class="phase-content" id="phase-content-1">'
         + makeCard(1,1,'s1-title','s1-desc',
             '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><div id="v-entropy" style="word-break:break-all;font-family:monospace;font-size:13px;line-height:2;letter-spacing:1px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).map(formatBits).join('&nbsp;') + '</div><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
             'CSPRNG: da como salida 16 bytes usando <code style="background:#1e293b;padding:1px 5px;border-radius:3px;font-family:monospace;color:#f472b6;font-size:11px">window.crypto.getRandomValues()</code>. Resultado: 2<sup>128</sup> combinaciones posibles. No predecibles.')
@@ -3401,7 +3406,9 @@ const BIP39_WORDLIST = [
         + makeCard(7,1,'s7-title','s7-desc',
             '<div class="value-label" style="text-transform:none">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all;margin-bottom:8px">' + (d.rootSeed||'—') + '</div><div style="font-size:12px;color:#f472b6;font-family:monospace">DK = PBKDF2(PRF, Password, Salt, c, dkLen)</div>',
             'PBKDF2 itera el HMAC-SHA512 2048 veces. Este proceso lento es intencional — hace que los ataques de fuerza bruta sean 2048× más costosos. La seed de 64 bytes es la derivación criptográfica real.')
-        + '<div class="phase-header" data-step-start="8"><h2 data-i18n="phase-2-title">' + T['phase-2-title'] + '</h2><p data-i18n-html="phase-2-desc">' + T['phase-2-desc'] + '</p></div>'
+        + '</div>'
+        + '<div class="phase-header" data-phase-id="2" data-step-start="8" onclick="togglePhase(2)"><h2 data-i18n="phase-2-title">' + T['phase-2-title'] + ' <span class="ph-chevron">▼</span></h2><p data-i18n-html="phase-2-desc">' + T['phase-2-desc'] + '</p></div>'
+        + '<div class="phase-content" id="phase-content-2">'
         + makeCard(8,2,'s8-title','s8-desc',
             '<div class="value-label" style="text-transform:none" data-i18n="s8-val-label">' + T['s8-val-label'] + '</div><div id="v-rootseed-2" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
             'Una root seed de <span class="tech-term">512 bits</span> (64 bytes) se usa como entrada en el proceso BIP32. A partir de ese punto se trabaja dentro del esquema de árbol jerárquico determinístico (HD): la seed se transforma mediante HMAC-SHA512 en la master private key + el chain code, para derivar en claves hijas.')
@@ -3438,7 +3445,9 @@ const BIP39_WORDLIST = [
             + '<tr><td style="padding:3px 6px">BIP86</td><td style="padding:3px 6px;font-family:monospace">xprv (reutiliza)</td><td style="padding:3px 6px;font-family:monospace">xpub</td><td style="padding:3px 6px">bc1p...</td></tr>'
             + '</table>'
             + '<br>Esta herramienta muestra xprv/xpub (BIP44) como base. Al importar en wallets como Sparrow o Electrum, usar el prefijo correcto según el tipo de dirección esperado.')
-        + '<div class="phase-header" data-step-start="14"><h2 data-i18n="phase-3-title">' + T['phase-3-title'] + '</h2><p data-i18n-html="phase-3-desc">' + T['phase-3-desc'] + '</p></div>'
+        + '</div>'
+        + '<div class="phase-header" data-phase-id="3" data-step-start="14" onclick="togglePhase(3)"><h2 data-i18n="phase-3-title">' + T['phase-3-title'] + ' <span class="ph-chevron">▼</span></h2><p data-i18n-html="phase-3-desc">' + T['phase-3-desc'] + '</p></div>'
+        + '<div class="phase-content" id="phase-content-3">'
         + makeCard(14,3,'s14-title','s14-desc',
             '<div class="value-label">xprv del Master Node</div><div id="v-xprv-2" class="hl" style="font-size:11px;word-break:break-all">' + (d.xprv||'—') + '</div>',
             'La derivación comienza siempre desde el xprv del master node. Cada nivel del árbol produce un hijo determinístico a partir del padre. Misma seed → mismo árbol siempre.')
@@ -3463,7 +3472,9 @@ const BIP39_WORDLIST = [
         + makeCard(19,3,'s19-title','s19-desc',
             '<div class="value-label" data-i18n="s19-val-label">' + T['s19-val-label'] + '</div><div id="v-childpub" class="hl" style="font-size:12px;word-break:break-all">' + (pub||'—') + '</div><small style="color:var(--text2)">prefijo <span class="hl">02</span> o <span class="hl">03</span> + coordenada X (32 bytes)</small>',
             'child_pubkey = child_privkey · G en secp256k1. La compresión usa prefijo 02 (Y par) o 03 (Y impar) + solo la coordenada X. Ahorra 32 bytes respecto a la forma no comprimida.')
-        + '<div class="phase-header" data-step-start="20"><h2 data-i18n="phase-4-title">' + T['phase-4-title'] + '</h2><p data-i18n-html="phase-4-desc">' + T['phase-4-desc'] + '</p></div>'
+        + '</div>'
+        + '<div class="phase-header" data-phase-id="4" data-step-start="20" onclick="togglePhase(4)"><h2 data-i18n="phase-4-title">' + T['phase-4-title'] + ' <span class="ph-chevron">▼</span></h2><p data-i18n-html="phase-4-desc">' + T['phase-4-desc'] + '</p></div>'
+        + '<div class="phase-content" id="phase-content-4">'
         + makeCard(20,4,'s20-title','s20-desc',
             '<div class="value-label" data-i18n="s20-val-label">' + T['s20-val-label'] + '</div><div id="v-pub20" class="hl" style="font-size:12px;word-break:break-all">' + (pub||'—') + '</div>',
             'La clave pública del nodo hoja es el punto de partida para construir la dirección. Es el único dato que se comparte públicamente de todo el árbol.')
@@ -3486,13 +3497,36 @@ const BIP39_WORDLIST = [
         + makeCard(25,4,'s25-title','s25-desc',
             '<div class="address-result"><div class="addr-label" data-i18n="s25-val-label">' + T['s25-val-label'] + '</div><div id="v-address" class="addr">' + formatAddress(d.address||'bc1q...') + '</div></div>',
             "Una dirección se puede compartir. No revela la clave privada, el mnemónico, ni el camino de derivación.<br>Para una nueva dirección de recepción, incrementá el índice (0→1→2...).<br><br>"
-            + "<b>Gap limit:</b> Las wallets estándar escanean hasta 20 índices consecutivos sin actividad antes de asumir que no hay más fondos (gap limit = 20). Si saltás índices al recibir fondos, una wallet que restaura desde la seed puede dejar de escanear antes de encontrar tus UTXOs y parecer que 'perdiste' fondos.");
+            + "<b>Gap limit:</b> Las wallets estándar escanean hasta 20 índices consecutivos sin actividad antes de asumir que no hay más fondos (gap limit = 20). Si saltás índices al recibir fondos, una wallet que restaura desde la seed puede dejar de escanear antes de encontrar tus UTXOs y parecer que 'perdiste' fondos.")
+        + '</div>';
 
       html = html.replace(/→/g, '<span class="arr">→</span>').replace(/←/g, '<span class="arr">←</span>');
       container.innerHTML = html;
       applyLang();
       highlightTechTerms(container);
       setTimeout(initScrollObserver, 50);
+    }
+
+    function togglePhase(phaseId) {
+      var header  = document.querySelector('.phase-header[data-phase-id="'+phaseId+'"]');
+      var content = document.getElementById('phase-content-'+phaseId);
+      if (!header || !content) return;
+      var collapsed = content.classList.contains('ph-collapsed');
+      content.classList.toggle('ph-collapsed');
+      header.classList.toggle('ph-collapsed');
+      if (collapsed) {
+        setTimeout(function(){
+          header.scrollIntoView({ behavior:'smooth', block:'start' });
+        }, 50);
+      }
+    }
+
+    function expandPhase(phaseId) {
+      var header  = document.querySelector('.phase-header[data-phase-id="'+phaseId+'"]');
+      var content = document.getElementById('phase-content-'+phaseId);
+      if (!header || !content) return;
+      content.classList.remove('ph-collapsed');
+      header.classList.remove('ph-collapsed');
     }
 
     function initScrollObserver() {
