@@ -3151,7 +3151,7 @@ const BIP39_WORDLIST = [
         'phase-1-title': 'Fase 1 — Crear Seed (BIP39)',
         'phase-1-desc': '<span style="color:var(--naranja)">Pasos 1–7</span>: de bits aleatorios a 12 palabras + root seed',
         'phase-2-title': 'Fase 2 — Árbol HD (BIP32)',
-        'phase-2-desc': 'Pasos 8–13: de root seed a master node + xprv/xpub',
+        'phase-2-desc': '<span style="color:var(--naranja)">Pasos 8–13</span>: de root seed a master node + xprv/xpub',
         'phase-3-title': 'Fase 3 — Derivar Claves',
         'phase-3-desc': "Pasos 14–19: de xprv a clave pública hija vía m/84'/0'/0'/0/0",
         'phase-4-title': 'Fase 4 — Construir Dirección',
@@ -3163,7 +3163,7 @@ const BIP39_WORDLIST = [
         's1-title': 'Entropía Aleatoria', 's2-title': 'Checksum SHA256',
         's3-title': 'Partes de 11 Bits', 's4-title': 'Diccionario BIP39',
         's5-title': 'Mnemónico', 's6-title': 'Normalizar con NFKD',
-        's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed Como Entrada',
+        's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed',
         's9-title': 'HMAC-SHA512', 's10-title': 'División IL + IR',
         's11-title': '3 Claves Maestras', 's12-title': 'Master Node (m)',
         's13-title': 'xprv / xpub', 's14-title': 'xprv del Master Node',
@@ -3179,8 +3179,8 @@ const BIP39_WORDLIST = [
         's4-desc': 'Cada segmento (0–2047) apunta a una palabra del diccionario oficial BIP39 de 2048 palabras.',
         's5-desc': 'Las 12 palabras forman el mnemónico, también llamado seed phrase y/o recovery phrase.',
         's6-desc': 'El mnemónico (12/24 palabras) + la passphrase (opcional) se normalizan con NFKD para determinar consistencia entre dispositivos + teclados.',
-        's7-desc': 'PBKDF2-HMAC-SHA512 itera 2048 veces para derivar los 64 bytes (512 bits) del root seed. Este proceso lento es intencional.',
-        's8-desc': 'Los 64 bytes del root seed entran al proceso BIP32 para construir el árbol HD.',
+        's7-desc': 'PBKDF2-HMAC-SHA512 es la función de derivación de claves que transforma el mnemónico en la root seed. Este proceso itera (repite) 2048 veces para derivar los 64 bytes (512 bits) del root seed. Este proceso lento es intencional (para endurecer la derivación).',
+        's8-desc': '64 bytes de entrada es el punto de partida para derivar toda la estructura de claves en BIP32.',
         's9-desc': 'HMAC-SHA512 con la clave literal "Bitcoin seed" transforma el root seed en 64 bytes de material de clave.',
         's10-desc': 'Los 64 bytes se dividen: IL (primeros 32) = clave privada maestra, IR (últimos 32) = chain code secreto que protege toda la derivación.',
         's11-desc': 'De IL se deriva la clave privada maestra. De ella, la clave pública comprimida (IL·G). IR es el chain code.',
@@ -3219,7 +3219,7 @@ const BIP39_WORDLIST = [
         'phase-1-title': 'Phase 1 — Create Seed (BIP39)',
         'phase-1-desc': '<span style="color:var(--naranja)">Steps 1–7</span>: from random bits to 12 words + root seed',
         'phase-2-title': 'Phase 2 — HD Tree (BIP32)',
-        'phase-2-desc': 'Steps 8–13: from root seed to master node + xprv/xpub',
+        'phase-2-desc': '<span style="color:var(--naranja)">Steps 8–13</span>: from root seed to master node + xprv/xpub',
         'phase-3-title': 'Phase 3 — Derive Keys',
         'phase-3-desc': "Steps 14–19: from xprv to child public key via m/84'/0'/0'/0/0",
         'phase-4-title': 'Phase 4 — Build Address',
@@ -3231,7 +3231,7 @@ const BIP39_WORDLIST = [
         's1-title': 'Random Entropy', 's2-title': 'SHA256 Checksum',
         's3-title': '11-Bit Parts', 's4-title': 'BIP39 Dictionary',
         's5-title': 'Mnemonic', 's6-title': 'Normalize with NFKD',
-        's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed Input',
+        's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed',
         's9-title': 'HMAC-SHA512', 's10-title': 'IL + IR Split',
         's11-title': '3 Master Keys', 's12-title': 'Master Node (m)',
         's13-title': 'xprv / xpub', 's14-title': 'xprv from Master Node',
@@ -3247,8 +3247,8 @@ const BIP39_WORDLIST = [
         's4-desc': 'Each segment (0–2047) maps to a word in the official BIP39 dictionary of 2048 words.',
         's5-desc': 'The 12 words form the mnemonic, also called seed phrase and/or recovery phrase.',
         's6-desc': 'The mnemonic (12/24 words) + the passphrase (optional) are NFKD-normalized to ensure consistency across devices + keyboards.',
-        's7-desc': 'PBKDF2-HMAC-SHA512 iterates 2048 times to derive 64 bytes (512 bits) of root seed. The slowness is intentional.',
-        's8-desc': 'The 64-byte root seed enters the BIP32 process to build the HD tree.',
+        's7-desc': 'PBKDF2-HMAC-SHA512 is the key derivation function that transforms the mnemonic into the root seed. This process iterates 2048 times to derive 64 bytes (512 bits) of root seed. The slowness is intentional (to harden the derivation).',
+        's8-desc': '64 bytes of input is the starting point to derive the entire key structure in BIP32.',
         's9-desc': 'HMAC-SHA512 with the literal key "Bitcoin seed" transforms the root seed into 64 bytes of key material.',
         's10-desc': 'The 64 bytes are split: IL (first 32) = master private key, IR (last 32) = secret chain code that protects the entire derivation.',
         's11-desc': 'IL becomes the master private key. From it, the compressed public key (IL·G). IR is the chain code.',
@@ -3384,12 +3384,12 @@ const BIP39_WORDLIST = [
             '<div class="value-label" style="text-transform:none" data-i18n="s6-val-label">' + T['s6-val-label'] + '</div><div id="v-nfkd"><span class="hl">' + (d.mnemonicNFKD||d.mnemonic||'—') + '</span><br><span style="color:var(--text2)">+ passphrase: &quot;<span id="v-passphrase" class="hl">' + (d.passphrase||'') + '</span>&quot;</span></div>',
             'NFKD es normalización Unicode. Ejemplo: la letra <b>é</b> puede representarse como un solo codepoint (U+00E9) y/o como e+acento (U+0065+U+0301) — sin NFKD producen bytes distintos → seeds completamente distintas. NFKD convierte ambas formas a la misma secuencia de bytes antes de PBKDF2. El prefijo literal "mnemonic" en el salt es ASCII fijo el cual no se normaliza (separación de dominio).')
         + makeCard(7,1,'s7-title','s7-desc',
-            '<div class="value-label">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
+            '<div class="value-label">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div style="font-size:12px;color:#67e8f9;font-family:monospace;margin-bottom:8px">DK = PBKDF2(PRF, Password, Salt, c, dkLen)</div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
             'PBKDF2 itera el HMAC-SHA512 2048 veces. Este proceso lento es intencional — hace que los ataques de fuerza bruta sean 2048× más costosos. La seed de 64 bytes es la derivación criptográfica real.')
-        + '<div class="phase-header" data-step-start="8"><h2 data-i18n="phase-2-title">' + T['phase-2-title'] + '</h2><p data-i18n="phase-2-desc">' + T['phase-2-desc'] + '</p></div>'
+        + '<div class="phase-header" data-step-start="8"><h2 data-i18n="phase-2-title">' + T['phase-2-title'] + '</h2><p data-i18n-html="phase-2-desc">' + T['phase-2-desc'] + '</p></div>'
         + makeCard(8,2,'s8-title','s8-desc',
-            '<div class="value-label" data-i18n="s8-val-label">' + T['s8-val-label'] + '</div><div id="v-rootseed-2" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
-            'La root seed de 512 bits entra al proceso BIP32. Desde este punto trabajamos con el árbol HD. La seed original ya no aparece en el proceso de derivación.')
+            '<div class="value-label" style="text-transform:none" data-i18n="s8-val-label">' + T['s8-val-label'] + '</div><div id="v-rootseed-2" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
+            'Una root seed de 512 bits se usa como entrada en el proceso BIP32. A partir de ese punto se trabaja dentro del esquema de árbol jerárquico determinístico (HD): la seed se transforma mediante HMAC-SHA512 en la master private key + el chain code, para derivar en claves hijas.')
         + makeCard(9,2,'s9-title','s9-desc',
             '<div class="value-label">HMAC-SHA512(key=&quot;Bitcoin seed&quot;, data=rootSeed)</div><div id="v-hmac" class="hl" style="font-size:11px;word-break:break-all">' + (d.hmacOutput||'—') + '</div><small style="color:var(--text2)">→ 64 bytes</small>',
             'La cadena literal "Bitcoin seed" es la clave HMAC por separación de dominio: evita que el mismo input en otro contexto (otra criptomoneda, otra versión de protocolo) produzca el mismo output. Si se usara SHA512 directo sin clave, cualquier sistema que aplique SHA512 a la misma seed produciría el mismo resultado. La palabra "Bitcoin" es literalmente un espacio de nombres que hace el output específico e irrepetible fuera de BIP32.')
@@ -3423,7 +3423,7 @@ const BIP39_WORDLIST = [
             + '<tr><td style="padding:3px 6px">BIP86</td><td style="padding:3px 6px;font-family:monospace">xprv (reutiliza)</td><td style="padding:3px 6px;font-family:monospace">xpub</td><td style="padding:3px 6px">bc1p...</td></tr>'
             + '</table>'
             + '<br>Esta herramienta muestra xprv/xpub (BIP44) como base. Al importar en wallets como Sparrow o Electrum, usar el prefijo correcto según el tipo de dirección esperado.')
-        + '<div class="phase-header" data-step-start="14"><h2 data-i18n="phase-3-title">' + T['phase-3-title'] + '</h2><p data-i18n="phase-3-desc">' + T['phase-3-desc'] + '</p></div>'
+        + '<div class="phase-header" data-step-start="14"><h2 data-i18n="phase-3-title">' + T['phase-3-title'] + '</h2><p data-i18n-html="phase-3-desc">' + T['phase-3-desc'] + '</p></div>'
         + makeCard(14,3,'s14-title','s14-desc',
             '<div class="value-label">xprv del Master Node</div><div id="v-xprv-2" class="hl" style="font-size:11px;word-break:break-all">' + (d.xprv||'—') + '</div>',
             'La derivación comienza siempre desde el xprv del master node. Cada nivel del árbol produce un hijo determinístico a partir del padre. Misma seed → mismo árbol siempre.')
@@ -3448,7 +3448,7 @@ const BIP39_WORDLIST = [
         + makeCard(19,3,'s19-title','s19-desc',
             '<div class="value-label" data-i18n="s19-val-label">' + T['s19-val-label'] + '</div><div id="v-childpub" class="hl" style="font-size:12px;word-break:break-all">' + (pub||'—') + '</div><small style="color:var(--text2)">prefijo <span class="hl">02</span> o <span class="hl">03</span> + coordenada X (32 bytes)</small>',
             'child_pubkey = child_privkey · G en secp256k1. La compresión usa prefijo 02 (Y par) o 03 (Y impar) + solo la coordenada X. Ahorra 32 bytes respecto a la forma no comprimida.')
-        + '<div class="phase-header" data-step-start="20"><h2 data-i18n="phase-4-title">' + T['phase-4-title'] + '</h2><p data-i18n="phase-4-desc">' + T['phase-4-desc'] + '</p></div>'
+        + '<div class="phase-header" data-step-start="20"><h2 data-i18n="phase-4-title">' + T['phase-4-title'] + '</h2><p data-i18n-html="phase-4-desc">' + T['phase-4-desc'] + '</p></div>'
         + makeCard(20,4,'s20-title','s20-desc',
             '<div class="value-label" data-i18n="s20-val-label">' + T['s20-val-label'] + '</div><div id="v-pub20" class="hl" style="font-size:12px;word-break:break-all">' + (pub||'—') + '</div>',
             'La clave pública del nodo hoja es el punto de partida para construir la dirección. Es el único dato que se comparte públicamente de todo el árbol.')
