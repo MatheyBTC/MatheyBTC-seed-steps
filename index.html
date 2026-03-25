@@ -45,19 +45,19 @@
     }
     .phase-tab {
       padding:7px 16px; font-size:13px; font-weight:700;
-      border-radius:4px; white-space:nowrap; cursor:default;
+      border-radius:4px; white-space:nowrap; cursor:pointer;
       border:2px solid transparent; transition:all 0.2s;
       opacity:0.45; letter-spacing:0.2px;
     }
     .phase-tab.active { opacity:1; color:#000 !important; }
     .phase-tab[data-phase="1"] { color:var(--celeste); border-color:var(--celeste); }
     .phase-tab[data-phase="1"].active { background:var(--celeste); border-color:var(--celeste); }
-    .phase-tab[data-phase="2"] { color:var(--amarillo); border-color:var(--amarillo); }
-    .phase-tab[data-phase="2"].active { background:var(--amarillo); border-color:var(--amarillo); }
-    .phase-tab[data-phase="3"] { color:var(--naranja); border-color:var(--naranja); }
-    .phase-tab[data-phase="3"].active { background:var(--naranja); border-color:var(--naranja); }
-    .phase-tab[data-phase="4"] { color:var(--blanco); border-color:var(--blanco); }
-    .phase-tab[data-phase="4"].active { background:var(--blanco); border-color:var(--blanco); }
+    .phase-tab[data-phase="2"] { color:#fde047; border-color:#fde047; }
+    .phase-tab[data-phase="2"].active { background:#fde047; border-color:#fde047; }
+    .phase-tab[data-phase="3"] { color:#f97316; border-color:#f97316; }
+    .phase-tab[data-phase="3"].active { background:#f97316; border-color:#f97316; }
+    .phase-tab[data-phase="4"] { color:#f472b6; border-color:#f472b6; }
+    .phase-tab[data-phase="4"].active { background:#f472b6; border-color:#f472b6; }
 
     /* MAIN CONTENT */
     .main { max-width:760px; margin:0 auto; padding:32px 20px 80px; }
@@ -179,10 +179,10 @@
 
   <!-- PHASE PROGRESS BAR -->
   <div class="phase-bar">
-    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1">Seed BIP39</div>
-    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2">Árbol HD</div>
-    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3">Derivación</div>
-    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4">Dirección</div>
+    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1" onclick="var el=document.getElementById('step-1');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}">Seed BIP39</div>
+    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2" onclick="var el=document.getElementById('step-8');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}">Árbol HD</div>
+    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3" onclick="var el=document.getElementById('step-14');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}">Derivación</div>
+    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4" onclick="var el=document.getElementById('step-20');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}">Dirección</div>
   </div>
 
   <main class="main">
@@ -3161,7 +3161,7 @@ const BIP39_WORDLIST = [
         'tech-btn': '+ técnico',
         'security-text': '⚠️ Solo educativo. No uses esta herramienta para uso real. Las claves creadas son visibles en la memoria del browser. Si copiás palabras y/o claves, el portapapeles puede leerse por otras aplicaciones. Nada transmite a un servidor — pero extensiones del browser pueden leer el contenido del sitio.',
         's1-title': 'Entropía Aleatoria', 's2-title': 'Checksum SHA256',
-        's3-title': 'Segmentos de 11 Bits', 's4-title': 'Diccionario BIP39',
+        's3-title': 'Partes de 11 Bits', 's4-title': 'Diccionario BIP39',
         's5-title': 'Mnemónico', 's6-title': 'Passphrase + NFKD',
         's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed Como Entrada',
         's9-title': 'HMAC-SHA512', 's10-title': 'División IL + IR',
@@ -3174,10 +3174,10 @@ const BIP39_WORDLIST = [
         's23-title': 'scriptPubKey', 's24-title': 'Encoding',
         's25-title': 'Dirección Bitcoin — Resultado Final',
         's1-desc': 'Un sistema produce 128 bits aleatorios. Estos bits son la semilla de todo el proceso.',
-        's2-desc': 'Se aplica SHA256 a la entropía. Los primeros 4 bits del resultado forman el checksum que permite detectar errores.',
-        's3-desc': '128 bits de entropía + 4 bits de checksum = 132 bits totales. Se dividen en 12 segmentos de 11 bits cada uno.',
+        's2-desc': 'Se aplica SHA256 a la entropía. Los primeros 4 bits del resultado forman el <span style="color:var(--naranja);font-weight:700">checksum</span> que permite detectar errores.',
+        's3-desc': '128 bits de entropía + 4 bits de checksum = 132 bits totales. Se dividen en 12 partes de 11 bits cada una.',
         's4-desc': 'Cada segmento (0–2047) apunta a una palabra del diccionario oficial BIP39 de 2048 palabras.',
-        's5-desc': 'Las 12 palabras forman el mnemónico, también llamado seed phrase o recovery phrase. Guardarlo en papel o metal.',
+        's5-desc': 'Las 12 palabras forman el mnemónico, también llamado seed phrase y/o recovery phrase.',
         's6-desc': 'El mnemónico y la passphrase se normalizan con NFKD para garantizar consistencia entre dispositivos y teclados.',
         's7-desc': 'PBKDF2-HMAC-SHA512 itera 2048 veces para derivar los 64 bytes (512 bits) del root seed. Este proceso lento es intencional.',
         's8-desc': 'Los 64 bytes del root seed entran al proceso BIP32 para construir el árbol HD.',
@@ -3198,11 +3198,11 @@ const BIP39_WORDLIST = [
         's23-desc': 'El scriptPubKey define las condiciones para gastar los fondos. Para P2WPKH es: OP_0 + HASH160.',
         's24-desc': 'El scriptPubKey se codifica en formato legible. BIP84 usa Bech32 (bc1q), BIP86 usa Bech32m (bc1p).',
         's25-desc': 'La dirección Bitcoin es el resultado final. Segura de compartir. Usá índices secuenciales (0→1→2) — las wallets tienen gap limit de 20 índices.',
-        's1-val-label': 'Entropía (128 bits)', 's1-note': '16 bytes · 128 bits aleatorios · solo modo Generar',
+        's1-val-label': 'Entropía (128 bits)', 's1-note': '16 bytes (HEX) | 128 bits (aleatorios)',
         's2-val-label': 'SHA256(entropía) → checksum (4 bits)',
-        's3-val-label': '132 bits → 12 segmentos de 11 bits',
-        's4-val-label': 'Índices → Palabras BIP39',
-        's5-val-label': 'Mnemónico (Recovery Code)', 's5-note': 'Guardar en papel o metal. Nunca en digital.',
+        's3-val-label': '132 bits → 12 partes de 11 bits',
+        's4-val-label': 'Palabras del Listado BIP39',
+        's5-val-label': 'Mnemónico (Recovery Code)', 's5-note': 'Escribir en papel/metal. Se recomiendan 2/3 copias en diferentes ubicaciones.',
         's6-val-label': 'NFKD(mnemónico) + NFKD(passphrase)',
         's8-val-label': 'Root Seed (64 bytes)', 's15-val-label': 'Ruta de Derivación (BIP84)',
         's18-val-label': 'Child Key Derivation — nivel por nivel',
@@ -3229,7 +3229,7 @@ const BIP39_WORDLIST = [
         'tech-btn': '+ technical',
         'security-text': '⚠️ Educational only. Do not use this tool for real use. Created keys are visible in browser memory. If you copy words and/or keys, your clipboard can be read by other applications. Nothing is transmitted to a server — but browser extensions can read the site content.',
         's1-title': 'Random Entropy', 's2-title': 'SHA256 Checksum',
-        's3-title': '11-Bit Segments', 's4-title': 'BIP39 Dictionary',
+        's3-title': '11-Bit Parts', 's4-title': 'BIP39 Dictionary',
         's5-title': 'Mnemonic', 's6-title': 'Passphrase + NFKD',
         's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed Input',
         's9-title': 'HMAC-SHA512', 's10-title': 'IL + IR Split',
@@ -3242,10 +3242,10 @@ const BIP39_WORDLIST = [
         's23-title': 'scriptPubKey', 's24-title': 'Encoding',
         's25-title': 'Bitcoin Address — Final Result',
         's1-desc': 'A system produces 128 random bits. These bits are the seed of the entire process.',
-        's2-desc': 'SHA256 is applied to the entropy. The first 4 bits of the result form a checksum to detect transcription errors.',
-        's3-desc': '128 entropy bits + 4 checksum bits = 132 total bits, split into 12 segments of 11 bits each.',
+        's2-desc': 'SHA256 is applied to the entropy. The first 4 bits of the result form a <span style="color:var(--naranja);font-weight:700">checksum</span> to detect transcription errors.',
+        's3-desc': '128 entropy bits + 4 checksum bits = 132 total bits, split into 12 parts of 11 bits each.',
         's4-desc': 'Each segment (0–2047) maps to a word in the official BIP39 dictionary of 2048 words.',
-        's5-desc': 'The 12 words form the mnemonic, also called seed phrase or recovery phrase. Write it on paper or metal.',
+        's5-desc': 'The 12 words form the mnemonic, also called seed phrase and/or recovery phrase.',
         's6-desc': 'The mnemonic and passphrase are NFKD-normalized to ensure consistency across devices and keyboards.',
         's7-desc': 'PBKDF2-HMAC-SHA512 iterates 2048 times to derive 64 bytes (512 bits) of root seed. The slowness is intentional.',
         's8-desc': 'The 64-byte root seed enters the BIP32 process to build the HD tree.',
@@ -3266,11 +3266,11 @@ const BIP39_WORDLIST = [
         's23-desc': 'The scriptPubKey defines the spending conditions. For P2WPKH it is: OP_0 + HASH160.',
         's24-desc': 'The scriptPubKey is encoded in human-readable format. BIP84 uses Bech32 (bc1q), BIP86 uses Bech32m (bc1p).',
         's25-desc': 'The Bitcoin address is the final result. Safe to share. Use sequential indices (0→1→2) — wallets enforce a gap limit of 20 indices.',
-        's1-val-label': 'Entropy (128 bits)', 's1-note': '16 bytes · 128 random bits · Generate mode only',
+        's1-val-label': 'Entropy (128 bits)', 's1-note': '16 bytes (HEX) | 128 bits (random)',
         's2-val-label': 'SHA256(entropy) → checksum (4 bits)',
-        's3-val-label': '132 bits → 12 segments of 11 bits',
-        's4-val-label': 'Indices → BIP39 Words',
-        's5-val-label': 'Mnemonic (Recovery Code)', 's5-note': 'Write on paper or metal. Never digital.',
+        's3-val-label': '132 bits → 12 parts of 11 bits',
+        's4-val-label': 'Words from the BIP39 List',
+        's5-val-label': 'Mnemonic (Recovery Code)', 's5-note': 'Write on paper/metal. 2/3 copies recommended in different locations.',
         's6-val-label': 'NFKD(mnemonic) + NFKD(passphrase)',
         's8-val-label': 'Root Seed (64 bytes)', 's15-val-label': 'Derivation Path (BIP84)',
         's18-val-label': 'Child Key Derivation — level by level',
@@ -3326,7 +3326,7 @@ const BIP39_WORDLIST = [
         + '<div class="step-badge">' + num + '</div>'
         + '<div class="step-title" data-i18n="' + titleKey + '">' + (T[titleKey] || titleKey) + '</div>'
         + '</div>'
-        + '<div class="step-desc" data-i18n="' + descKey + '">' + (T[descKey] || '') + '</div>'
+        + '<div class="step-desc" data-i18n-html="' + descKey + '">' + (T[descKey] || '') + '</div>'
         + '<div class="value-box">' + valueHtml + '</div>'
         + '<button class="tech-toggle" onclick="var tc=this.nextElementSibling;tc.classList.toggle(\'open\');this.textContent=tc.classList.contains(\'open\')?(currentLang===\'es\'?\'− técnico\':\'− technical\'):(currentLang===\'es\'?\'+ técnico\':\'+ technical\')">' + techLabel + '</button>'
         + '<div class="tech-content">' + (techText || '') + '</div>'
@@ -3345,7 +3345,7 @@ const BIP39_WORDLIST = [
       var bitsSegs = (d.bits132 || '').split(' ');
       var bitsHtml = bitsSegs.map(function(b, i) {
         if (i < 11) return '<span style="display:inline-block;margin:3px;font-family:monospace;font-size:13px;letter-spacing:1px">' + formatBits(b) + '</span>';
-        // Last segment: first 7 bits = entropy, last 4 bits = checksum (orange)
+        // Last part: first 7 bits = entropy, last 4 bits = checksum (orange)
         var entropyPart = formatBits(b.slice(0,7));
         var checksumPart = b.slice(7).split('').map(function(c){
           return c === '1' ? '<span style="color:var(--naranja);font-weight:600">1</span>' : '<span style="color:#a16207">0</span>';
@@ -3365,21 +3365,21 @@ const BIP39_WORDLIST = [
         + '</div>'
         + makeCard(1,1,'s1-title','s1-desc',
             '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><div id="v-entropy" style="word-break:break-all;font-family:monospace;font-size:13px;line-height:2;letter-spacing:1px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).map(formatBits).join('&nbsp;') + '</div><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
-            'CSPRNG genera 16 bytes usando window.crypto.getRandomValues(). Nunca reutilizar, nunca predecir. 2^128 combinaciones posibles.')
+            'CSPRNG: da como salida 16 bytes usando <code style="background:#1e293b;padding:1px 5px;border-radius:3px;font-family:monospace;color:#67e8f9;font-size:11px">window.crypto.getRandomValues()</code>. Resultado: 2<sup>128</sup> combinaciones posibles. No predecibles.')
         + makeCard(2,1,'s2-title','s2-desc',
             '<div class="value-label" data-i18n="s2-val-label">' + T['s2-val-label'] + '</div>'
             + '<div style="font-size:11px;word-break:break-all;margin-bottom:6px"><span class="hl" style="background:rgba(103,232,249,0.25);padding:1px 3px;border-radius:3px" id="v-sha256-byte1">' + (d.sha256Full||'').slice(0,2) + '</span><span style="color:var(--text2)" id="v-sha256-rest">' + (d.sha256Full||'').slice(2) + '</span></div>'
-            + '<div style="font-size:12px"><span class="hl" id="v-checksum">' + (d.checksumBit||'0000') + '</span><span style="color:var(--text2)"> ← primeros 4 bits del primer byte</span></div>',
-            'SHA256 produce 32 bytes. El primer byte (resaltado) se convierte a binario y se toman sus 4 bits más significativos como checksum. Ratio: 1 bit de checksum por cada 32 bits de entropía (128÷32=4). Detecta errores al ingresar el mnemónico con probabilidad de fallo 1/16.')
+            + '<div style="font-size:12px"><span class="hl" id="v-checksum">' + (d.checksumBit||'0000') + '</span><span style="color:var(--text2)"> <span style="font-size:14px">←</span> primeros 4 bits del primer byte</span></div>',
+            'SHA256 aplica 64 rondas de compresión sobre la entropía de 16 bytes y produce un hash de 32 bytes determinista. Solo se usa el <b>primer byte</b> (resaltado). Ese byte en binario tiene 8 bits — se toman los 4 bits más significativos (MSB) como checksum. Ratio: 4 bits de checksum para 128 bits de entropía = 1 bit de control por cada 32 bits. Si al ingresar el mnemónico hay un error de tipeo, la probabilidad de que el checksum lo detecte es 15/16 (93.75%). Un checksum de 4 bits NO protege contra pérdida o robo — solo detecta errores de transcripción.')
         + makeCard(3,1,'s3-title','s3-desc',
             '<div class="value-label" data-i18n="s3-val-label">' + T['s3-val-label'] + '</div><div id="v-bits" style="word-break:break-all;line-height:2">' + bitsHtml + '</div>',
-            '128 bits de entropía + 4 bits de checksum = 132 bits totales. 132 ÷ 11 = 12 segmentos exactos. Cada segmento es un número entre 0 y 2047.')
+            '128 bits de entropía + 4 bits de checksum = 132 bits totales. 132 ÷ 11 = 12 partes exactas. Cada parte es un número entre 0 y 2047 — el índice de la palabra en el diccionario BIP39.')
         + makeCard(4,1,'s4-title','s4-desc',
             '<div class="value-label" data-i18n="s4-val-label">' + T['s4-val-label'] + '</div><div id="v-words" style="line-height:2">' + wordsHtml + '</div>',
-            'El diccionario BIP39 tiene exactamente 2048 palabras (2^11). Las primeras 4 letras de cada palabra son únicas, permitiendo detectar errores de escritura.')
+            'El diccionario BIP39 contiene exactamente 2048 palabras (2<sup>11</sup>). Cada palabra está diseñada de modo que sus primeras 3/4 letras son únicas, permitiendo detectar errores de escritura y/o autocompletar a medida que se escriben.')
         + makeCard(5,1,'s5-title','s5-desc',
-            '<div class="value-label" data-i18n="s5-val-label">' + T['s5-val-label'] + '</div><div id="v-mnemonic" class="hl" style="font-size:15px;letter-spacing:0.5px;line-height:1.6">' + (d.mnemonic||'—') + '</div><small style="color:var(--text2);margin-top:6px;display:block" data-i18n="s5-note">' + T['s5-note'] + '</small>',
-            'El mnemónico es la representación humana de la entropía, no de la seed final. Con el mismo mnemónico + distinta passphrase → wallets completamente distintas.')
+            '<div class="value-label" style="text-transform:none" data-i18n="s5-val-label">' + T['s5-val-label'] + '</div><div id="v-mnemonic" class="hl" style="font-size:15px;letter-spacing:0.5px;line-height:1.6">' + (d.mnemonic||'—') + '</div><small style="color:var(--text2);margin-top:6px;display:block" data-i18n="s5-note">' + T['s5-note'] + '</small>',
+            'El mnemónico es la representación para leer la entropía inicial, no de la seed final. Con el mismo mnemónico + distinta passphrase (proceso opcional) → se derivan a diferentes wallets completamente distintas.')
         + makeCard(6,1,'s6-title','s6-desc',
             '<div class="value-label" data-i18n="s6-val-label">' + T['s6-val-label'] + '</div><div id="v-nfkd"><span class="hl">' + (d.mnemonicNFKD||d.mnemonic||'—') + '</span><br><span style="color:var(--text2)">+ passphrase: &quot;<span id="v-passphrase" class="hl">' + (d.passphrase||'') + '</span>&quot;</span></div>',
             'NFKD es normalización Unicode. Ejemplo crítico: la letra <b>é</b> puede representarse como un solo codepoint (U+00E9) <i>o</i> como e+acento (U+0065+U+0301) — sin NFKD producen bytes distintos → seeds completamente distintas. NFKD convierte ambas formas a la misma secuencia de bytes antes de PBKDF2. El prefijo literal "mnemonic" en el salt es ASCII fijo y no se normaliza (separación de dominio).')
