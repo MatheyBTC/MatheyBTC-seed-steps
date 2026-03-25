@@ -140,6 +140,10 @@
     /* PHASE HEADER */
     .phase-header { padding:24px 0 12px; margin-bottom:8px; border-bottom:1px solid var(--border); cursor:pointer; user-select:none; }
     .phase-header h2 { font-size:17px; font-weight:800; display:flex; align-items:center; justify-content:space-between; }
+    .phase-header[data-phase-id="3"] h2,
+    .phase-header[data-phase-id="4"] h2 { color:var(--naranja); }
+    .phase-header[data-phase-id="3"],
+    .phase-header[data-phase-id="4"] { border-bottom-color:var(--naranja); }
     .phase-header p { font-size:13px; color:var(--text2); margin-top:4px; }
     .ph-chevron { font-size:12px; opacity:0.6; transition:transform 0.25s; flex-shrink:0; }
     .ph-collapsed .ph-chevron { transform:rotate(-90deg); }
