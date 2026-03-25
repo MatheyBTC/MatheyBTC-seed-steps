@@ -140,10 +140,6 @@
     /* PHASE HEADER */
     .phase-header { padding:24px 0 12px; margin-bottom:8px; border-bottom:1px solid var(--border); cursor:pointer; user-select:none; }
     .phase-header h2 { font-size:17px; font-weight:800; display:flex; align-items:center; justify-content:space-between; }
-    .phase-header[data-phase-id="3"] h2,
-    .phase-header[data-phase-id="4"] h2 { color:var(--naranja); }
-    .phase-header[data-phase-id="3"],
-    .phase-header[data-phase-id="4"] { border-bottom-color:var(--naranja); }
     .phase-header p { font-size:13px; color:var(--text2); margin-top:4px; }
     .ph-chevron { font-size:12px; opacity:0.6; transition:transform 0.25s; flex-shrink:0; }
     .ph-collapsed .ph-chevron { transform:rotate(-90deg); }
@@ -3170,9 +3166,9 @@ const BIP39_WORDLIST = [
         'phase-2-title': 'Fase 2 — Árbol HD (BIP32)',
         'phase-2-desc': '<span style="color:var(--naranja)">Pasos 8–13</span>: de root seed a master node + xprv/xpub',
         'phase-3-title': 'Fase 3 — Derivar Claves',
-        'phase-3-desc': "Pasos 14–19: de xprv a clave pública hija vía m/84'/0'/0'/0/0",
+        'phase-3-desc': '<span style="color:var(--naranja)">Pasos 14–19:</span> de xprv a clave pública hija vía m/84\'/0\'/0\'/0/0',
         'phase-4-title': 'Fase 4 — Construir Dirección',
-        'phase-4-desc': 'Pasos 20–25: de pubkey a dirección Bitcoin bc1q...',
+        'phase-4-desc': '<span style="color:var(--naranja)">Pasos 20–25:</span> de pubkey a dirección Bitcoin bc1q...',
         'passphrase-label': 'Passphrase Opcional (BIP39)',
         'passphrase-placeholder': 'Dejar vacío para el estándar',
         'tech-btn': '+ técnico',
@@ -3238,9 +3234,9 @@ const BIP39_WORDLIST = [
         'phase-2-title': 'Phase 2 — HD Tree (BIP32)',
         'phase-2-desc': '<span style="color:var(--naranja)">Steps 8–13</span>: from root seed to master node + xprv/xpub',
         'phase-3-title': 'Phase 3 — Derive Keys',
-        'phase-3-desc': "Steps 14–19: from xprv to child public key via m/84'/0'/0'/0/0",
+        'phase-3-desc': '<span style="color:var(--naranja)">Steps 14–19:</span> from xprv to child public key via m/84\'/0\'/0\'/0/0',
         'phase-4-title': 'Phase 4 — Build Address',
-        'phase-4-desc': 'Steps 20–25: from pubkey to Bitcoin address bc1q...',
+        'phase-4-desc': '<span style="color:var(--naranja)">Steps 20–25:</span> from pubkey to Bitcoin address bc1q...',
         'passphrase-label': 'Optional passphrase (BIP39)',
         'passphrase-placeholder': 'Leave empty for standard',
         'tech-btn': '+ technical',
