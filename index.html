@@ -3184,7 +3184,7 @@ const BIP39_WORDLIST = [
         's9-desc': 'HMAC-SHA512 con la clave literal "Bitcoin seed" transforma el root seed en 64 bytes de material de clave.',
         's10-desc': '64 bytes se dividen: IL (primeros 32) = clave privada maestra, IR (últimos 32) = chain code secreto.',
         's11-desc': 'De IL se deriva la clave privada maestra. De ella, la clave pública comprimida (IL·G). IR es el chain code.',
-        's12-desc': 'El Master Node (m) combina clave privada, pública y chain code. Es la raíz del árbol HD determinista.',
+        's12-desc': 'El Master Node (m) combina 3 elementos: clave privada + clave pública + chain code. Es la raíz del árbol HD determinista.',
         's13-desc': 'xprv y xpub son las claves extendidas serializadas en 78 bytes y codificadas en Base58Check para portabilidad.',
         's14-desc': 'La derivación parte siempre del xprv del master node. Con la misma seed se obtiene siempre el mismo árbol.',
         's15-desc': "La ruta m/84'/0'/0'/0/0 selecciona: BIP84, Bitcoin mainnet, primera cuenta, recepción, primer índice.",
@@ -3252,7 +3252,7 @@ const BIP39_WORDLIST = [
         's9-desc': 'HMAC-SHA512 with the literal key "Bitcoin seed" transforms the root seed into 64 bytes of key material.',
         's10-desc': '64 bytes are split: IL (first 32) = master private key, IR (last 32) = secret chain code.',
         's11-desc': 'IL becomes the master private key. From it, the compressed public key (IL·G). IR is the chain code.',
-        's12-desc': "The Master Node (m) combines private key, public key, and chain code. It's the root of the deterministic HD tree.",
+        's12-desc': "The Master Node (m) combines 3 elements: private key + public key + chain code. It's the root of the deterministic HD tree.",
         's13-desc': 'xprv and xpub are the extended keys, serialized in 78 bytes and Base58Check-encoded for portability.',
         's14-desc': 'Derivation always starts from the master node xprv. The same seed always produces the same tree.',
         's15-desc': "Path m/84'/0'/0'/0/0 selects: BIP84, Bitcoin mainnet, first account, receive, first index.",
@@ -3410,7 +3410,7 @@ const BIP39_WORDLIST = [
             + '<span style="background:rgba(250,204,21,0.1);border:1px solid var(--border);padding:3px 6px;border-radius:3px">index<br><span style="color:var(--text2)">4 B</span></span>'
             + '</div>'
             + '<div id="v-masternode" class="hl" style="margin-top:8px">m / depth:0 / index:0 / fingerprint:00000000</div>',
-            'Estructura completa de un nodo HD: privKey(32)+pubKey(33)+chainCode(32)+depth(1)+fingerprint(4)+index(4) = 106 bytes. El fingerprint del padre son los primeros 4 bytes del HASH160 de la clave pública del padre — permite identificar la relación parent-child sin revelar claves.')
+            'Estructura completa de un nodo HD:<br><span style="color:var(--naranja);font-family:monospace;font-size:12px">privKey(32)+pubKey(33)+chainCode(32)+depth(1)+fingerprint(4)+index(4) = 106 bytes</span><br>El fingerprint del padre son los primeros 4 bytes del HASH160 de la clave pública del padre — permite identificar la relación parent-child sin revelar claves.')
         + makeCard(13,2,'s13-title','s13-desc',
             '<div><div class="value-label">xprv (clave privada extendida)</div><div id="v-xprv" class="hl" style="font-size:11px;word-break:break-all">' + (d.xprv||'—') + '</div></div><div style="margin-top:8px"><div class="value-label">xpub (clave pública extendida)</div><div id="v-xpub" class="hl" style="font-size:11px;word-break:break-all">' + (d.xpub||'—') + '</div></div>',
             'Serialización de 78 bytes: version(4)+depth(1)+fingerprint(4)+index(4)+chainCode(32)+key(33). xprv: key=0x00||privKey. xpub: key=pubKey comprimida. Luego Base58Check → string portable.<br><br>'
