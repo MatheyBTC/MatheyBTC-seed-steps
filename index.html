@@ -188,12 +188,12 @@
   <main class="main">
     <!-- SECURITY BANNER -->
     <div class="security-banner" id="security-banner">
-      <span data-i18n="security-text">⚠️ Solo educativo. No uses esta herramienta para guardar fondos reales. Las claves generadas son visibles en la memoria del browser y en DevTools. Si copiás palabras o claves, el portapapeles puede ser leído por otras aplicaciones. Nada se envía a ningún servidor — pero extensiones del browser pueden leer el contenido de la página. Para máxima seguridad, usá un dispositivo air-gapped sin extensiones.</span>
+      <span data-i18n="security-text">⚠️ Solo educativo. No uses esta herramienta para uso real. Las claves creadas son visibles en la memoria del browser. Si copiás palabras y/o claves, el portapapeles puede leerse por otras aplicaciones. Nada transmite a un servidor — pero extensiones del browser pueden leer el contenido del sitio.</span>
     </div>
 
     <!-- PASSPHRASE -->
     <div class="passphrase-row">
-      <label data-i18n="passphrase-label">Passphrase opcional (BIP39)</label>
+      <label data-i18n="passphrase-label">Passphrase Opcional (BIP39)</label>
       <input type="text" id="passphrase-input"
              placeholder="Dejar vacío para el estándar"
              data-i18n-placeholder="passphrase-placeholder"
@@ -2990,6 +2990,14 @@ const BIP39_WORDLIST = [
     let currentLang = 'es';
     let currentMode = 'a';
 
+    function formatBits(bits) {
+      if (!bits) return '';
+      return bits.split('').map(function(b) {
+        return b === '1'
+          ? '<span style="color:#f1f5f9;font-weight:700">1</span>'
+          : '<span style="color:#334155">0</span>';
+      }).join('<span style="letter-spacing:0"> </span>');
+    }
     function formatAddress(addr) {
       if (!addr) return '—';
       return addr.split('').map(function(c, i) {
@@ -3141,17 +3149,17 @@ const BIP39_WORDLIST = [
         'phase-1': 'Seed BIP39', 'phase-2': 'Árbol HD',
         'phase-3': 'Derivación', 'phase-4': 'Dirección',
         'phase-1-title': 'Fase 1 — Crear Seed (BIP39)',
-        'phase-1-desc': 'Pasos 1–7: de bits aleatorios a 12 palabras + root seed',
+        'phase-1-desc': '<span style="color:var(--naranja)">Pasos 1–7</span>: de bits aleatorios a 12 palabras + root seed',
         'phase-2-title': 'Fase 2 — Árbol HD (BIP32)',
         'phase-2-desc': 'Pasos 8–13: de root seed a master node + xprv/xpub',
         'phase-3-title': 'Fase 3 — Derivar Claves',
         'phase-3-desc': "Pasos 14–19: de xprv a clave pública hija vía m/84'/0'/0'/0/0",
         'phase-4-title': 'Fase 4 — Construir Dirección',
         'phase-4-desc': 'Pasos 20–25: de pubkey a dirección Bitcoin bc1q...',
-        'passphrase-label': 'Passphrase opcional (BIP39)',
+        'passphrase-label': 'Passphrase Opcional (BIP39)',
         'passphrase-placeholder': 'Dejar vacío para el estándar',
         'tech-btn': '+ técnico',
-        'security-text': '⚠️ Solo educativo. No uses esta herramienta para guardar fondos reales. Las claves generadas son visibles en la memoria del browser y en DevTools. Si copiás palabras o claves, el portapapeles puede ser leído por otras aplicaciones. Nada se envía a ningún servidor — pero extensiones del browser pueden leer el contenido de la página. Para máxima seguridad, usá un dispositivo air-gapped sin extensiones.',
+        'security-text': '⚠️ Solo educativo. No uses esta herramienta para uso real. Las claves creadas son visibles en la memoria del browser. Si copiás palabras y/o claves, el portapapeles puede leerse por otras aplicaciones. Nada transmite a un servidor — pero extensiones del browser pueden leer el contenido del sitio.',
         's1-title': 'Entropía Aleatoria', 's2-title': 'Checksum SHA256',
         's3-title': 'Segmentos de 11 Bits', 's4-title': 'Diccionario BIP39',
         's5-title': 'Mnemónico', 's6-title': 'Passphrase + NFKD',
@@ -3165,7 +3173,7 @@ const BIP39_WORDLIST = [
         's21-title': 'Pubkey Comprimida (33 bytes)', 's22-title': 'SHA256 → RIPEMD160',
         's23-title': 'scriptPubKey', 's24-title': 'Encoding',
         's25-title': 'Dirección Bitcoin — Resultado Final',
-        's1-desc': 'Un generador criptográficamente seguro produce 128 bits aleatorios. Estos bits son la semilla de todo el proceso.',
+        's1-desc': 'Un sistema produce 128 bits aleatorios. Estos bits son la semilla de todo el proceso.',
         's2-desc': 'Se aplica SHA256 a la entropía. Los primeros 4 bits del resultado forman el checksum que permite detectar errores.',
         's3-desc': '128 bits de entropía + 4 bits de checksum = 132 bits totales. Se dividen en 12 segmentos de 11 bits cada uno.',
         's4-desc': 'Cada segmento (0–2047) apunta a una palabra del diccionario oficial BIP39 de 2048 palabras.',
@@ -3209,7 +3217,7 @@ const BIP39_WORDLIST = [
         'phase-1': 'BIP39 Seed', 'phase-2': 'HD Tree',
         'phase-3': 'Derivation', 'phase-4': 'Address',
         'phase-1-title': 'Phase 1 — Create Seed (BIP39)',
-        'phase-1-desc': 'Steps 1–7: from random bits to 12 words + root seed',
+        'phase-1-desc': '<span style="color:var(--naranja)">Steps 1–7</span>: from random bits to 12 words + root seed',
         'phase-2-title': 'Phase 2 — HD Tree (BIP32)',
         'phase-2-desc': 'Steps 8–13: from root seed to master node + xprv/xpub',
         'phase-3-title': 'Phase 3 — Derive Keys',
@@ -3219,7 +3227,7 @@ const BIP39_WORDLIST = [
         'passphrase-label': 'Optional passphrase (BIP39)',
         'passphrase-placeholder': 'Leave empty for standard',
         'tech-btn': '+ technical',
-        'security-text': '⚠️ Educational only. Do not use this tool to store real funds. Generated keys are visible in browser memory and DevTools. If you copy words or keys, your clipboard can be read by other applications. Nothing is sent to any server — but browser extensions can read page content. For maximum security, use an air-gapped device without extensions.',
+        'security-text': '⚠️ Educational only. Do not use this tool for real use. Created keys are visible in browser memory. If you copy words and/or keys, your clipboard can be read by other applications. Nothing is transmitted to a server — but browser extensions can read the site content.',
         's1-title': 'Random Entropy', 's2-title': 'SHA256 Checksum',
         's3-title': '11-Bit Segments', 's4-title': 'BIP39 Dictionary',
         's5-title': 'Mnemonic', 's6-title': 'Passphrase + NFKD',
@@ -3233,7 +3241,7 @@ const BIP39_WORDLIST = [
         's21-title': 'Compressed Pubkey (33 bytes)', 's22-title': 'SHA256 → RIPEMD160',
         's23-title': 'scriptPubKey', 's24-title': 'Encoding',
         's25-title': 'Bitcoin Address — Final Result',
-        's1-desc': 'A cryptographically secure generator produces 128 random bits. These bits are the seed of the entire process.',
+        's1-desc': 'A system produces 128 random bits. These bits are the seed of the entire process.',
         's2-desc': 'SHA256 is applied to the entropy. The first 4 bits of the result form a checksum to detect transcription errors.',
         's3-desc': '128 entropy bits + 4 checksum bits = 132 total bits, split into 12 segments of 11 bits each.',
         's4-desc': 'Each segment (0–2047) maps to a word in the official BIP39 dictionary of 2048 words.',
@@ -3279,6 +3287,10 @@ const BIP39_WORDLIST = [
       document.querySelectorAll('[data-i18n]').forEach(function(el) {
         var key = el.dataset.i18n;
         if (T && T[key] !== undefined) el.textContent = T[key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+        var key = el.dataset.i18nHtml;
+        if (T && T[key] !== undefined) el.innerHTML = T[key];
       });
       document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
         var key = el.dataset.i18nPlaceholder;
@@ -3332,9 +3344,13 @@ const BIP39_WORDLIST = [
         : '';
       var bitsSegs = (d.bits132 || '').split(' ');
       var bitsHtml = bitsSegs.map(function(b, i) {
-        if (i < 11) return '<span class="hl" style="margin:2px">' + b + '</span>';
+        if (i < 11) return '<span style="display:inline-block;margin:3px;font-family:monospace;font-size:13px;letter-spacing:3px">' + formatBits(b) + '</span>';
         // Last segment: first 7 bits = entropy, last 4 bits = checksum (orange)
-        return '<span class="hl" style="margin:2px">' + b.slice(0,7) + '<span style="color:var(--naranja)">' + b.slice(7) + '</span></span>';
+        var entropyPart = formatBits(b.slice(0,7));
+        var checksumPart = b.slice(7).split('').map(function(c){
+          return c === '1' ? '<span style="color:var(--naranja);font-weight:700">1</span>' : '<span style="color:#7c3a10">0</span>';
+        }).join('<span style="letter-spacing:0"> </span>');
+        return '<span style="display:inline-block;margin:3px;font-family:monospace;font-size:13px;letter-spacing:3px">' + entropyPart + checksumPart + '</span>';
       }).join(' ');
       var wordsHtml = (d.words || []).map(function(w, i){ return '<span class="hl">' + w + '</span><span style="color:var(--text2);font-size:11px">(' + ((d.indices || [])[i] || 0) + ')</span> '; }).join('');
       var pub = d.childPubKey || '';
@@ -3345,10 +3361,10 @@ const BIP39_WORDLIST = [
       var html = ''
         + '<div class="phase-header" data-step-start="1">'
         + '<h2 data-i18n="phase-1-title">' + T['phase-1-title'] + '</h2>'
-        + '<p data-i18n="phase-1-desc">' + T['phase-1-desc'] + '</p>'
+        + '<p data-i18n-html="phase-1-desc">' + T['phase-1-desc'] + '</p>'
         + '</div>'
         + makeCard(1,1,'s1-title','s1-desc',
-            '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><span class="hl" id="v-entropy" style="word-break:break-all;letter-spacing:1px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).join(' ') + '</span><br><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
+            '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><div id="v-entropy" style="word-break:break-all;font-family:monospace;font-size:13px;line-height:2;letter-spacing:3px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).map(formatBits).join('&nbsp;&nbsp;') + '</div><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
             'CSPRNG genera 16 bytes usando window.crypto.getRandomValues(). Nunca reutilizar, nunca predecir. 2^128 combinaciones posibles.')
         + makeCard(2,1,'s2-title','s2-desc',
             '<div class="value-label" data-i18n="s2-val-label">' + T['s2-val-label'] + '</div>'
