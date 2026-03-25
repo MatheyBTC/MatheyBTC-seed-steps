@@ -3178,7 +3178,7 @@ const BIP39_WORDLIST = [
         's5-title': 'Mnemónico', 's6-title': 'Normalizar con NFKD',
         's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed',
         's9-title': 'HMAC-SHA512', 's10-title': 'División IL + IR',
-        's11-title': '3 Claves Maestras', 's12-title': 'Master Node (m)',
+        's11-title': '2 Claves + Chain Code', 's12-title': 'Master Node (m)',
         's13-title': 'xprv / xpub', 's14-title': 'xprv del Master Node',
         's15-title': 'Ruta de Derivación', 's16-title': 'Normal vs Hardened',
         's17-title': '4 Estándares de Derivación', 's18-title': 'Derivación Por Nivel',
@@ -3191,7 +3191,7 @@ const BIP39_WORDLIST = [
         's3-desc': '128 bits de entropía + 4 bits de checksum = 132 bits totales. Se dividen en 12 partes de 11 bits cada una.',
         's4-desc': 'Cada segmento (0–2047) apunta a una palabra del diccionario oficial BIP39 de 2048 palabras.',
         's5-desc': 'Las 12 palabras forman el mnemónico, también llamado seed phrase y/o recovery phrase.',
-        's6-desc': 'El mnemónico (12/24 palabras) + la passphrase (opcional) se normalizan con NFKD para determinar consistencia entre dispositivos + teclados.',
+        's6-desc': 'El mnemónico (12/24 palabras) + la passphrase (opcional) se normalizan con NFKD para garantizar consistencia entre dispositivos + teclados.',
         's7-desc': 'PBKDF2-HMAC-SHA512 es la función de derivación de claves que transforma el mnemónico en la root seed. Este proceso itera (repite) 2048 veces para derivar los 64 bytes del root seed. El proceso lento es intencional (para endurecer la derivación).',
         's8-desc': '64 bytes de entrada es el punto de partida para derivar toda la estructura de claves en BIP32.',
         's9-desc': '<span class="tech-term">HMAC-SHA512</span> con la clave literal <span class="tech-term">"Bitcoin seed"</span> transforma el root seed en 64 bytes de material de clave.',
@@ -3208,7 +3208,7 @@ const BIP39_WORDLIST = [
         's20-desc': 'La clave pública comprimida del nodo hoja es el único input para construir la dirección Bitcoin.',
         's21-desc': 'La pubkey comprimida usa 33 bytes: prefijo 02/03 + coordenada X. El prefijo indica la paridad de Y.',
         's22-desc': 'SHA256 → RIPEMD160 = HASH160: comprime la pubkey de 33 a 20 bytes (menos fees) con seguridad en capas de dos familias criptográficas distintas.',
-        's23-desc': 'El scriptPubKey define las condiciones para gastar los fondos. Para P2WPKH es: OP_0 + HASH160.',
+        's23-desc': 'El scriptPubKey define las condiciones para gastar los fondos. Para P2WPKH: <span style="color:#f472b6;font-family:monospace">OP_0 + OP_PUSHBYTES_20 + &lt;hash160&gt;</span> (22 bytes).',
         's24-desc': 'El scriptPubKey se codifica en formato legible. BIP84 usa Bech32 (bc1q), BIP86 usa Bech32m (bc1p).',
         's25-desc': 'La dirección Bitcoin es el resultado final. Segura de compartir. Usá índices secuenciales (0→1→2) — las wallets tienen gap limit de 20 índices.',
         's1-val-label': 'Entropía (128 bits)', 's1-note': '16 bytes (HEX) | 128 bits (aleatorios)',
@@ -3246,7 +3246,7 @@ const BIP39_WORDLIST = [
         's5-title': 'Mnemonic', 's6-title': 'Normalize with NFKD',
         's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed',
         's9-title': 'HMAC-SHA512', 's10-title': 'IL + IR Split',
-        's11-title': '3 Master Keys', 's12-title': 'Master Node (m)',
+        's11-title': '2 Keys + Chain Code', 's12-title': 'Master Node (m)',
         's13-title': 'xprv / xpub', 's14-title': 'xprv from Master Node',
         's15-title': 'Derivation Path', 's16-title': 'Normal vs Hardened',
         's17-title': '4 Derivation Standards', 's18-title': 'Per-Level Derivation',
@@ -3276,7 +3276,7 @@ const BIP39_WORDLIST = [
         's20-desc': 'The compressed public key of the leaf node is the only input for building the Bitcoin address.',
         's21-desc': 'The compressed pubkey uses 33 bytes: prefix 02/03 + X coordinate. The prefix indicates Y parity.',
         's22-desc': 'SHA256 → RIPEMD160 = HASH160: compresses the pubkey from 33 to 20 bytes (lower fees) with layered security from two distinct cryptographic families.',
-        's23-desc': 'The scriptPubKey defines the spending conditions. For P2WPKH it is: OP_0 + HASH160.',
+        's23-desc': 'The scriptPubKey defines the spending conditions. For P2WPKH: <span style="color:#f472b6;font-family:monospace">OP_0 + OP_PUSHBYTES_20 + &lt;hash160&gt;</span> (22 bytes).',
         's24-desc': 'The scriptPubKey is encoded in human-readable format. BIP84 uses Bech32 (bc1q), BIP86 uses Bech32m (bc1p).',
         's25-desc': 'The Bitcoin address is the final result. Safe to share. Use sequential indices (0→1→2) — wallets enforce a gap limit of 20 indices.',
         's1-val-label': 'Entropy (128 bits)', 's1-note': '16 bytes (HEX) | 128 bits (random)',
@@ -3397,16 +3397,16 @@ const BIP39_WORDLIST = [
             '128 bits de entropía + 4 bits de checksum = 132 bits totales. 132 ÷ 11 = 12 partes exactas. Cada parte es un número entre 0 y 2047 — el índice de la palabra en el diccionario BIP39.')
         + makeCard(4,1,'s4-title','s4-desc',
             '<div class="value-label" style="text-transform:none" data-i18n="s4-val-label">' + T['s4-val-label'] + '</div><div id="v-words" style="line-height:2">' + wordsHtml + '</div>',
-            'El diccionario BIP39 contiene exactamente 2048 palabras (2<sup>11</sup>). Cada palabra está diseñada de modo que sus primeras 3/4 letras son únicas, permitiendo detectar errores de escritura y/o autocompletar a medida que se escriben.')
+            'El diccionario BIP39 contiene exactamente 2048 palabras (2<sup>11</sup>). Las primeras <b>4 letras</b> de cada palabra son únicas dentro de la lista — permite autocompletar y detectar errores de escritura con solo 4 caracteres.')
         + makeCard(5,1,'s5-title','s5-desc',
             '<div class="value-label" style="text-transform:none" data-i18n="s5-val-label">' + T['s5-val-label'] + '</div><div id="v-mnemonic" class="hl" style="font-size:15px;letter-spacing:0.5px;line-height:1.6">' + (d.mnemonic||'—') + '</div><small style="color:var(--text2);margin-top:6px;display:block" data-i18n="s5-note">' + T['s5-note'] + '</small>',
-            'El mnemónico es la representación para leer la entropía inicial, no de la seed final. Con el mismo mnemónico + distinta passphrase (proceso opcional) → se derivan a diferentes wallets completamente distintas.')
+            'El mnemónico representa la entropía inicial, no la seed final. Con el mismo mnemónico + distinta passphrase → wallets completamente distintas.<br><br><b style="color:#f87171">⚠ Si usás passphrase y la perdés, el acceso a esos fondos es permanentemente imposible.</b> No hay recuperación: ni el mnemónico solo, ni soporte técnico, ni nadie puede ayudarte. La passphrase no se guarda en ningún lado.')
         + makeCard(6,1,'s6-title','s6-desc',
             '<div class="value-label" style="text-transform:none" data-i18n="s6-val-label">' + T['s6-val-label'] + '</div><div id="v-nfkd"><span class="hl">' + (d.mnemonicNFKD||d.mnemonic||'—') + '</span><br><span style="color:var(--text2)">+ passphrase: &quot;<span id="v-passphrase" class="hl">' + (d.passphrase||'') + '</span>&quot;</span></div>',
             'NFKD es normalización Unicode. Ejemplo: la letra <b>é</b> puede representarse como un solo codepoint (U+00E9) y/o como e+acento (U+0065+U+0301) — sin NFKD producen bytes distintos → seeds completamente distintas. NFKD convierte ambas formas a la misma secuencia de bytes antes de PBKDF2. El prefijo literal "mnemonic" en el salt es ASCII fijo el cual no se normaliza (separación de dominio).')
         + makeCard(7,1,'s7-title','s7-desc',
             '<div class="value-label" style="text-transform:none">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all;margin-bottom:8px">' + (d.rootSeed||'—') + '</div><div style="font-size:12px;color:#f472b6;font-family:monospace">DK = PBKDF2(PRF, Password, Salt, c, dkLen)</div>',
-            'PBKDF2 itera el HMAC-SHA512 2048 veces. Este proceso lento es intencional — hace que los ataques de fuerza bruta sean 2048× más costosos. La seed de 64 bytes es la derivación criptográfica real.')
+            'PBKDF2 itera el HMAC-SHA512 2048 veces. El proceso lento es intencional — endurece contra fuerza bruta.<br><br>Parámetros exactos según BIP39:<br><span style="color:#f472b6;font-family:monospace;font-size:12px">Password = NFKD(mnemónico)<br>Salt = "mnemonic" + NFKD(passphrase)<br>c = 2048 · dkLen = 64 bytes</span><br><br>El prefijo literal <span style="color:#f472b6;font-family:monospace">"mnemonic"</span> en el salt es fijo — un passphrase vacío produce salt = <span style="color:#f472b6;font-family:monospace">"mnemonic"</span>.')
         + '</div>'
         + '<div class="phase-header" data-phase-id="2" data-step-start="8" onclick="togglePhase(2)"><h2 data-i18n="phase-2-title">' + T['phase-2-title'] + ' <span class="ph-chevron">▼</span></h2><p data-i18n-html="phase-2-desc">' + T['phase-2-desc'] + '</p></div>'
         + '<div class="phase-content" id="phase-content-2">'
@@ -3414,11 +3414,11 @@ const BIP39_WORDLIST = [
             '<div class="value-label" style="text-transform:none" data-i18n="s8-val-label">' + T['s8-val-label'] + '</div><div id="v-rootseed-2" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
             'Una root seed de <span class="tech-term">512 bits</span> (64 bytes) se usa como entrada en el proceso BIP32. A partir de ese punto se trabaja dentro del esquema de árbol jerárquico determinístico (HD): la seed se transforma mediante HMAC-SHA512 en la master private key + el chain code, para derivar en claves hijas.')
         + makeCard(9,2,'s9-title','s9-desc',
-            '<div class="value-label" style="text-transform:none">HMAC-SHA512(key=&quot;bitcoin seed&quot;, data=rootSeed)</div><div id="v-hmac" class="hl" style="font-size:11px;word-break:break-all">' + (d.hmacOutput||'—') + '</div><small style="color:var(--text2)">→ 64 bytes</small>',
-            'Cadena literal <span class="tech-term">"bitcoin seed"</span> se usa como clave en HMAC-SHA512 dentro de BIP32 para obtener separación de dominio. Esto determina que, usando la misma root seed como input, el resultado sea de este contexto. Que no coincida con el de otros sistemas y/o protocolos. En este sentido, la palabra <span class="tech-term">"bitcoin"</span> es un namespace que hace que el resultado sea único del estándar BIP32.')
+            '<div class="value-label" style="text-transform:none">HMAC-SHA512(key=&quot;Bitcoin seed&quot;, data=rootSeed)</div><div id="v-hmac" class="hl" style="font-size:11px;word-break:break-all">' + (d.hmacOutput||'—') + '</div><small style="color:var(--text2)">→ 64 bytes</small>',
+            'Cadena literal <span style="color:#f472b6;font-family:monospace">"Bitcoin seed"</span> (B mayúscula, exacto en BIP32) se usa como clave en HMAC-SHA512 para obtener separación de dominio. Un salt distinto produce una master key completamente diferente. En este sentido, <span style="color:#f472b6;font-family:monospace">"Bitcoin"</span> es un namespace que hace el resultado único del estándar BIP32.')
         + makeCard(10,2,'s10-title','s10-desc',
             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div class="value-label" style="text-transform:none">IL — Master Private Key</div><div id="v-il" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPrivKey||'—') + '</div></div><div><div class="value-label" style="text-transform:none">IR — Chain Code</div><div id="v-ir" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterChainCode||'—') + '</div></div></div>',
-            'IL (izquierda, 32B) = clave privada maestra. IR (derecha, 32B) = chain code. El chain code es un valor secreto que forma parte esencial del proceso de derivación en BIP32 (nunca debe exponerse). En el esquema HD, tanto la clave (privada o pública) como el chain code son necesarios para derivar claves hijas; sin el chain code no es posible continuar la derivación.<br><br><span style="color:#f472b6;font-family:monospace;font-size:12px">I = HMAC-SHA512(key="bitcoin seed", data=Root Seed)<br>I = IL || IR</span>')
+            'IL (izquierda, 32B) = clave privada maestra. IR (derecha, 32B) = chain code. El chain code es un valor secreto que forma parte esencial del proceso de derivación en BIP32 (nunca debe exponerse). En el esquema HD, tanto la clave (privada o pública) como el chain code son necesarios para derivar claves hijas; sin el chain code no es posible continuar la derivación.<br><br><span style="color:#f472b6;font-family:monospace;font-size:12px">I = HMAC-SHA512(key="Bitcoin seed", data=Root Seed)<br>I = IL || IR</span>')
         + makeCard(11,2,'s11-title','s11-desc',
             '<div><div class="value-label" style="text-transform:none">Master Private Key (IL)</div><div id="v-mpk" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPrivKey||'—') + '</div></div><div style="margin-top:8px"><div class="value-label" style="text-transform:none">Master Public Key (IL·G)</div><div id="v-mpubk" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPubKey||'—') + '</div></div><div style="margin-top:8px"><div class="value-label" style="text-transform:none">Chain Code (IR)</div><div id="v-cc" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterChainCode||'—') + '</div></div>',
             'Una clave pública se obtiene multiplicando la clave privada por el punto generador <span class="tech-term">G</span> de la curva elíptica secp256k1. Operación unidireccional (imposible de revertir). Un chain code es un valor esencial en cada nodo del árbol HD. No puede deducirse ni cambiarse a partir de la clave pública y/o privada. Elemento necesario para derivar las claves hijas.')
@@ -3472,7 +3472,7 @@ const BIP39_WORDLIST = [
             "Cada nivel aplica CKD: IL_child = HMAC izquierda + parent_privkey (mod n). chain_code_child = HMAC derecha. El proceso se repite 5 veces para llegar al nodo hoja m/84'/0'/0'/0/0.")
         + makeCard(19,3,'s19-title','s19-desc',
             '<div class="value-label" data-i18n="s19-val-label">' + T['s19-val-label'] + '</div><div id="v-childpub" class="hl" style="font-size:12px;word-break:break-all">' + (pub||'—') + '</div><small style="color:var(--text2)">prefijo <span class="hl">02</span> o <span class="hl">03</span> + coordenada X (32 bytes)</small>',
-            'child_pubkey = child_privkey · G en secp256k1. La compresión usa prefijo 02 (Y par) o 03 (Y impar) + solo la coordenada X. Ahorra 32 bytes respecto a la forma no comprimida.')
+            '<span style="color:#f472b6;font-family:monospace">child_pubkey = child_privkey · G</span> en secp256k1. Compresión: prefijo <span style="color:#f472b6;font-family:monospace">02</span> (Y par) o <span style="color:#f472b6;font-family:monospace">03</span> (Y impar) + solo coordenada X. Ahorra 32 bytes respecto a la forma no comprimida.<br><br><b>CKDpub (derivación pública):</b> Para índices normales (sin hardened), existe <span style="color:#f472b6;font-family:monospace">CKDpub</span> que deriva la clave pública hija directamente desde la clave pública del padre — sin necesitar nunca la clave privada. Esto es lo que permite las wallets <b>watch-only</b>: con solo el xpub del nivel account podés generar todas las direcciones de recepción sin exponer ninguna clave privada.')
         + '</div>'
         + '<div class="phase-header" data-phase-id="4" data-step-start="20" onclick="togglePhase(4)"><h2 data-i18n="phase-4-title">' + T['phase-4-title'] + ' <span class="ph-chevron">▼</span></h2><p data-i18n-html="phase-4-desc">' + T['phase-4-desc'] + '</p></div>'
         + '<div class="phase-content" id="phase-content-4">'
