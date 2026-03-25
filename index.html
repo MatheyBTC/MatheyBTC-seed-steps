@@ -2994,9 +2994,9 @@ const BIP39_WORDLIST = [
       if (!bits) return '';
       return bits.split('').map(function(b) {
         return b === '1'
-          ? '<span style="color:#f1f5f9;font-weight:700">1</span>'
-          : '<span style="color:#334155">0</span>';
-      }).join('<span style="letter-spacing:0"> </span>');
+          ? '<span style="color:#f1f5f9;font-weight:600">1</span>'
+          : '<span style="color:#64748b">0</span>';
+      }).join('');
     }
     function formatAddress(addr) {
       if (!addr) return '—';
@@ -3344,13 +3344,13 @@ const BIP39_WORDLIST = [
         : '';
       var bitsSegs = (d.bits132 || '').split(' ');
       var bitsHtml = bitsSegs.map(function(b, i) {
-        if (i < 11) return '<span style="display:inline-block;margin:3px;font-family:monospace;font-size:13px;letter-spacing:3px">' + formatBits(b) + '</span>';
+        if (i < 11) return '<span style="display:inline-block;margin:3px;font-family:monospace;font-size:13px;letter-spacing:1px">' + formatBits(b) + '</span>';
         // Last segment: first 7 bits = entropy, last 4 bits = checksum (orange)
         var entropyPart = formatBits(b.slice(0,7));
         var checksumPart = b.slice(7).split('').map(function(c){
-          return c === '1' ? '<span style="color:var(--naranja);font-weight:700">1</span>' : '<span style="color:#7c3a10">0</span>';
-        }).join('<span style="letter-spacing:0"> </span>');
-        return '<span style="display:inline-block;margin:3px;font-family:monospace;font-size:13px;letter-spacing:3px">' + entropyPart + checksumPart + '</span>';
+          return c === '1' ? '<span style="color:var(--naranja);font-weight:600">1</span>' : '<span style="color:#a16207">0</span>';
+        }).join('');
+        return '<span style="display:inline-block;margin:3px;font-family:monospace;font-size:13px;letter-spacing:1px">' + entropyPart + checksumPart + '</span>';
       }).join(' ');
       var wordsHtml = (d.words || []).map(function(w, i){ return '<span class="hl">' + w + '</span><span style="color:var(--text2);font-size:11px">(' + ((d.indices || [])[i] || 0) + ')</span> '; }).join('');
       var pub = d.childPubKey || '';
@@ -3364,7 +3364,7 @@ const BIP39_WORDLIST = [
         + '<p data-i18n-html="phase-1-desc">' + T['phase-1-desc'] + '</p>'
         + '</div>'
         + makeCard(1,1,'s1-title','s1-desc',
-            '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><div id="v-entropy" style="word-break:break-all;font-family:monospace;font-size:13px;line-height:2;letter-spacing:3px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).map(formatBits).join('&nbsp;&nbsp;') + '</div><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
+            '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><div id="v-entropy" style="word-break:break-all;font-family:monospace;font-size:13px;line-height:2;letter-spacing:1px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).map(formatBits).join('&nbsp;') + '</div><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
             'CSPRNG genera 16 bytes usando window.crypto.getRandomValues(). Nunca reutilizar, nunca predecir. 2^128 combinaciones posibles.')
         + makeCard(2,1,'s2-title','s2-desc',
             '<div class="value-label" data-i18n="s2-val-label">' + T['s2-val-label'] + '</div>'
