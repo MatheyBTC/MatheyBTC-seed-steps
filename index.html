@@ -3330,7 +3330,12 @@ const BIP39_WORDLIST = [
       var step1Extra = currentMode === 'b'
         ? '<button onclick="generateEntropy()" style="margin-top:8px;padding:6px 16px;background:var(--celeste);color:#000;border:none;border-radius:6px;font-weight:700;cursor:pointer">🎲 Nueva entropía</button>'
         : '';
-      var bitsHtml = (d.bits132 || '').split(' ').map(function(b){ return '<span class="hl" style="margin:2px">' + b + '</span>'; }).join(' ');
+      var bitsSegs = (d.bits132 || '').split(' ');
+      var bitsHtml = bitsSegs.map(function(b, i) {
+        if (i < 11) return '<span class="hl" style="margin:2px">' + b + '</span>';
+        // Last segment: first 7 bits = entropy, last 4 bits = checksum (orange)
+        return '<span class="hl" style="margin:2px">' + b.slice(0,7) + '<span style="color:var(--naranja)">' + b.slice(7) + '</span></span>';
+      }).join(' ');
       var wordsHtml = (d.words || []).map(function(w, i){ return '<span class="hl">' + w + '</span><span style="color:var(--text2);font-size:11px">(' + ((d.indices || [])[i] || 0) + ')</span> '; }).join('');
       var pub = d.childPubKey || '';
       var pubPrefix = pub.slice(0, 2) || '02';
