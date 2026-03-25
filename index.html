@@ -23,7 +23,8 @@
       padding:10px 24px; display:flex; align-items:center;
       justify-content:space-between; flex-wrap:wrap; gap:8px;
     }
-    .header-logo { font-size:20px; font-weight:400; color:var(--naranja); text-decoration:none; }
+    .header-logo { font-size:20px; font-weight:800; color:var(--naranja); text-decoration:none; }
+    .header-subtitle { font-size:11px; color:var(--naranja); opacity:0.8; margin-top:1px; }
     .header-links { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
     .header-links a { color:var(--text2); font-size:13px; text-decoration:none; }
     .header-links a:hover { color:var(--text); }
@@ -36,6 +37,8 @@
       cursor:pointer; font-weight:600; transition:all 0.2s;
     }
     .toggle-btn.active { background:var(--amarillo); color:#000; border-color:var(--amarillo); }
+    #btn-mode-a { border-color:var(--amarillo); color:var(--amarillo); }
+    #btn-mode-a.active { background:transparent; color:var(--amarillo); border-color:var(--amarillo); }
 
     /* PHASE PROGRESS BAR */
     .phase-bar {
@@ -48,7 +51,7 @@
       padding:7px 16px; font-size:13px; font-weight:700;
       border-radius:4px; white-space:nowrap; cursor:pointer;
       border:2px solid transparent; transition:all 0.2s;
-      opacity:0.45; letter-spacing:0.2px;
+      opacity:0.72; letter-spacing:0.2px;
     }
     .phase-tab.active { opacity:1; color:#000 !important; }
     .phase-tab[data-phase="1"] { color:var(--celeste); border-color:var(--celeste); }
@@ -170,11 +173,12 @@
 <body>
   <!-- HEADER -->
   <header class="header">
-    <div style="display:flex;align-items:center;gap:20px;">
+    <div style="display:flex;flex-direction:column;gap:2px;">
       <a href="#" class="header-logo">₿ MatheyBTC — Seed Steps</a>
+      <span class="header-subtitle">Paso a paso desde la entropía hasta la dirección de Bitcoin</span>
     </div>
     <div class="header-controls">
-      <button class="toggle-btn active" id="btn-mode-a" onclick="setMode('a')" data-i18n="mode-a">📖 Ejemplo</button>
+      <button class="toggle-btn active" id="btn-mode-a" onclick="setMode('a')" data-i18n="mode-a">Ejemplo</button>
       <button class="toggle-btn" id="btn-mode-b" onclick="setMode('b')" data-i18n="mode-b" style="border-color:var(--naranja);color:var(--naranja)">Generar</button>
       <button class="toggle-btn" id="btn-lang" onclick="toggleLang()">EN</button>
       <button id="btn-nueva-entropia" onclick="generateEntropy()" style="display:none;padding:5px 16px;background:var(--celeste);color:#000;border:none;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer">🎲 Nueva entropía</button>
@@ -3149,7 +3153,7 @@ const BIP39_WORDLIST = [
 
     var TRANSLATIONS = {
       es: {
-        'mode-a': '📖 Ejemplo', 'mode-b': 'Generar',
+        'mode-a': 'Ejemplo', 'mode-b': 'Generar',
         'phase-1': 'Seed BIP39', 'phase-2': 'Árbol HD',
         'phase-3': 'Derivación', 'phase-4': 'Dirección',
         'phase-1-title': 'Fase 1 — Crear Seed (BIP39)',
@@ -3217,7 +3221,7 @@ const BIP39_WORDLIST = [
         'err-compute': '⚠️ Error en el cálculo. Verificá la consola para más detalles.'
       },
       en: {
-        'mode-a': '📖 Example', 'mode-b': 'Generate',
+        'mode-a': 'Example', 'mode-b': 'Generate',
         'phase-1': 'BIP39 Seed', 'phase-2': 'HD Tree',
         'phase-3': 'Derivation', 'phase-4': 'Address',
         'phase-1-title': 'Phase 1 — Create Seed (BIP39)',
