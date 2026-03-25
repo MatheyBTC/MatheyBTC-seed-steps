@@ -10,6 +10,7 @@
       --border: #334155; --text: #f1f5f9; --text2: #94a3b8;
       --celeste: #67e8f9; --amarillo: #facc15;
       --naranja: #fb923c; --blanco: #f1f5f9;
+      --rosa: #f472b6;
       --green: #4ade80; --red: #f87171;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -22,7 +23,7 @@
       padding:10px 24px; display:flex; align-items:center;
       justify-content:space-between; flex-wrap:wrap; gap:8px;
     }
-    .header-logo { font-size:20px; font-weight:800; color:var(--amarillo); text-decoration:none; }
+    .header-logo { font-size:20px; font-weight:400; color:var(--naranja); text-decoration:none; }
     .header-links { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
     .header-links a { color:var(--text2); font-size:13px; text-decoration:none; }
     .header-links a:hover { color:var(--text); }
@@ -174,8 +175,9 @@
     </div>
     <div class="header-controls">
       <button class="toggle-btn active" id="btn-mode-a" onclick="setMode('a')" data-i18n="mode-a">📖 Ejemplo</button>
-      <button class="toggle-btn" id="btn-mode-b" onclick="setMode('b')" data-i18n="mode-b">⚡ Generar</button>
+      <button class="toggle-btn" id="btn-mode-b" onclick="setMode('b')" data-i18n="mode-b" style="border-color:var(--naranja);color:var(--naranja)">Generar</button>
       <button class="toggle-btn" id="btn-lang" onclick="toggleLang()">EN</button>
+      <button id="btn-nueva-entropia" onclick="generateEntropy()" style="display:none;padding:5px 16px;background:var(--celeste);color:#000;border:none;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer">🎲 Nueva entropía</button>
     </div>
   </header>
 
@@ -3147,7 +3149,7 @@ const BIP39_WORDLIST = [
 
     var TRANSLATIONS = {
       es: {
-        'mode-a': '📖 Ejemplo', 'mode-b': '⚡ Generar',
+        'mode-a': '📖 Ejemplo', 'mode-b': 'Generar',
         'phase-1': 'Seed BIP39', 'phase-2': 'Árbol HD',
         'phase-3': 'Derivación', 'phase-4': 'Dirección',
         'phase-1-title': 'Fase 1 — Crear Seed (BIP39)',
@@ -3175,8 +3177,8 @@ const BIP39_WORDLIST = [
         's21-title': 'Pubkey Comprimida (33 bytes)', 's22-title': 'SHA256 → RIPEMD160',
         's23-title': 'scriptPubKey', 's24-title': 'Encoding',
         's25-title': 'Dirección Bitcoin — Resultado Final',
-        's1-desc': 'Un sistema produce 128 bits aleatorios. Estos bits son la semilla de todo el proceso.',
-        's2-desc': 'Se aplica SHA256 a la entropía. Los primeros 4 bits del resultado forman el <span style="color:var(--naranja);font-weight:700">checksum</span> que permite detectar errores.',
+        's1-desc': 'Un CSPRNG produce 128 bits aleatorios. Estos bits son la semilla de todo el proceso.',
+        's2-desc': 'Se aplica SHA256 a la entropía. Los primeros 4 bits del resultado forman el <span class="tech-term">checksum</span> que permite detectar errores.',
         's3-desc': '128 bits de entropía + 4 bits de checksum = 132 bits totales. Se dividen en 12 partes de 11 bits cada una.',
         's4-desc': 'Cada segmento (0–2047) apunta a una palabra del diccionario oficial BIP39 de 2048 palabras.',
         's5-desc': 'Las 12 palabras forman el mnemónico, también llamado seed phrase y/o recovery phrase.',
@@ -3210,12 +3212,12 @@ const BIP39_WORDLIST = [
         's18-val-label': 'Child Key Derivation — Nivel por Nivel',
         's19-val-label': 'Clave Pública Hija (comprimida, 33 bytes)',
         's20-val-label': 'Pubkey hija (entrada)', 's21-val-label': 'Pubkey Comprimida (33 bytes)',
-        's25-val-label': "Dirección Bitcoin — m/84'/0'/0'/0/0",
+        's25-val-label': "Dirección Bitcoin — m/84'/0'/0'/0/0 (literal)",
         'err-webcrypto': '⚠️ WebCrypto no disponible. Usá un browser moderno (Chrome, Firefox, Safari).',
         'err-compute': '⚠️ Error en el cálculo. Verificá la consola para más detalles.'
       },
       en: {
-        'mode-a': '📖 Example', 'mode-b': '⚡ Generate',
+        'mode-a': '📖 Example', 'mode-b': 'Generate',
         'phase-1': 'BIP39 Seed', 'phase-2': 'HD Tree',
         'phase-3': 'Derivation', 'phase-4': 'Address',
         'phase-1-title': 'Phase 1 — Create Seed (BIP39)',
@@ -3243,8 +3245,8 @@ const BIP39_WORDLIST = [
         's21-title': 'Compressed Pubkey (33 bytes)', 's22-title': 'SHA256 → RIPEMD160',
         's23-title': 'scriptPubKey', 's24-title': 'Encoding',
         's25-title': 'Bitcoin Address — Final Result',
-        's1-desc': 'A system produces 128 random bits. These bits are the seed of the entire process.',
-        's2-desc': 'SHA256 is applied to the entropy. The first 4 bits of the result form a <span style="color:var(--naranja);font-weight:700">checksum</span> to detect transcription errors.',
+        's1-desc': 'A CSPRNG produces 128 random bits. These bits are the seed of the entire process.',
+        's2-desc': 'SHA256 is applied to the entropy. The first 4 bits of the result form a <span class="tech-term">checksum</span> to detect transcription errors.',
         's3-desc': '128 entropy bits + 4 checksum bits = 132 total bits, split into 12 parts of 11 bits each.',
         's4-desc': 'Each segment (0–2047) maps to a word in the official BIP39 dictionary of 2048 words.',
         's5-desc': 'The 12 words form the mnemonic, also called seed phrase and/or recovery phrase.',
@@ -3311,6 +3313,8 @@ const BIP39_WORDLIST = [
       document.getElementById('btn-mode-a').classList.toggle('active', m === 'a');
       document.getElementById('btn-mode-b').classList.toggle('active', m === 'b');
       document.getElementById('security-banner').classList.toggle('visible', m === 'b');
+      var btnEntropia = document.getElementById('btn-nueva-entropia');
+      if (btnEntropia) btnEntropia.style.display = m === 'b' ? 'inline-block' : 'none';
       renderSteps();
     }
 
@@ -3337,7 +3341,7 @@ const BIP39_WORDLIST = [
     }
 
     function highlightTechTerms(container) {
-      var TECH_RE = /\b(CSPRNG|PBKDF2-HMAC-SHA512|HMAC-SHA512|SHA-256|SHA256|SHA512|RIPEMD-160|RIPEMD160|PBKDF2|secp256k1|BIP-32|BIP-39|BIP-44|BIP-49|BIP-84|BIP-86|BIP32|BIP39|BIP44|BIP49|BIP84|BIP86|NFKD|HASH160|Base58Check|Bech32m|Bech32|CKD|OP_0|OP_PUSHBYTES_20|ECDSA|scriptPubKey|P2WPKH|P2PKH|P2SH|P2TR|xprv|xpub|chain\s+code|Master\s+Node|IL·G|árbol\s+HD|claves\s+hijas|clave\s+pública|clave\s+privada|parent-child)\b/g;
+      var TECH_RE = /\b(CSPRNG|PBKDF2-HMAC-SHA512|HMAC-SHA512|SHA-256|SHA256|SHA512|RIPEMD-160|RIPEMD160|PBKDF2|secp256k1|BIP-32|BIP-39|BIP-44|BIP-49|BIP-84|BIP-86|BIP32|BIP39|BIP44|BIP49|BIP84|BIP86|NFKD|HASH160|Base58Check|Bech32m|Bech32|CKD|OP_0|OP_PUSHBYTES_20|ECDSA|scriptPubKey|P2WPKH|P2PKH|P2SH|P2TR|xprv|xpub|chain\s+code|Master\s+Node|IL·G|árbol\s+HD|claves\s+hijas|clave\s+pública|clave\s+privada|parent-child|checksum|512\s+bits|IL|IR|HD)\b/g;
       container.querySelectorAll('.tech-content, .step-desc').forEach(function(el) {
         el.innerHTML = el.innerHTML.replace(TECH_RE, '<span class="tech-term">$1</span>');
       });
@@ -3348,9 +3352,7 @@ const BIP39_WORDLIST = [
       var container = document.getElementById('steps-container');
       if (!container) return;
       var T = TRANSLATIONS[currentLang];
-      var step1Extra = currentMode === 'b'
-        ? '<div style="text-align:right"><button onclick="generateEntropy()" style="margin-top:8px;padding:6px 16px;background:var(--celeste);color:#000;border:none;border-radius:6px;font-weight:700;cursor:pointer">🎲 Nueva entropía</button></div>'
-        : '';
+      var step1Extra = '';
       var bitsSegs = (d.bits132 || '').split(' ');
       var bitsHtml = bitsSegs.map(function(b, i) {
         if (i < 11) return '<span style="display:inline-block;margin:3px;font-family:monospace;font-size:13px;letter-spacing:1px">' + formatBits(b) + '</span>';
@@ -3379,7 +3381,7 @@ const BIP39_WORDLIST = [
             '<div class="value-label" data-i18n="s2-val-label">' + T['s2-val-label'] + '</div>'
             + '<div style="font-size:11px;word-break:break-all;margin-bottom:6px"><span class="hl" style="background:rgba(103,232,249,0.25);padding:1px 3px;border-radius:3px" id="v-sha256-byte1">' + (d.sha256Full||'').slice(0,2) + '</span><span style="color:var(--text2)" id="v-sha256-rest">' + (d.sha256Full||'').slice(2) + '</span></div>'
             + '<div style="font-size:12px"><span class="hl" id="v-checksum">' + (d.checksumBit||'0000') + '</span><span style="color:var(--text2)"> <span style="font-size:14px">←</span> primeros 4 bits del primer byte</span></div>',
-            'SHA256 aplica 64 rondas de compresión sobre la entropía de 16 bytes como resultado un hash de 32 bytes determinista. Solo se usa el <b>primer byte</b> (resaltado). Ese byte en binario tiene 8 bits — se toman los 4 bits más relevantes (MSB) como checksum. Ratio: 4 bits de checksum para 128 bits de entropía = 1 bit de control por cada 32 bits. Si existe un error de tipeo, la probabilidad de que el checksum lo detecte es 15/16 (93.75%). Un checksum solo detecta errores de transcripción.')
+            'SHA256 aplica 64 rondas de compresión sobre la entropía de 16 bytes como resultado un hash de 32 bytes determinista. Solo se usa el <b>primer byte</b> (resaltado). Ese byte en binario tiene 8 bits — se toman los 4 bits más relevantes (MSB) como <span style="color:#f472b6">checksum</span>. Ratio: 4 bits de <span style="color:#f472b6">checksum</span> para 128 bits de entropía = 1 bit de control por cada 32 bits. Si existe un error de tipeo, la probabilidad de que el <span style="color:#f472b6">checksum</span> lo detecte es 15/16. Un <span style="color:#f472b6">checksum</span> solo detecta errores de transcripción.')
         + makeCard(3,1,'s3-title','s3-desc',
             '<div class="value-label" data-i18n="s3-val-label">' + T['s3-val-label'] + '</div><div id="v-bits" style="word-break:break-all;line-height:2">' + bitsHtml + '</div>',
             '128 bits de entropía + 4 bits de checksum = 132 bits totales. 132 ÷ 11 = 12 partes exactas. Cada parte es un número entre 0 y 2047 — el índice de la palabra en el diccionario BIP39.')
@@ -3401,13 +3403,13 @@ const BIP39_WORDLIST = [
             'Una root seed de <span class="tech-term">512 bits</span> (64 bytes) se usa como entrada en el proceso BIP32. A partir de ese punto se trabaja dentro del esquema de árbol jerárquico determinístico (HD): la seed se transforma mediante HMAC-SHA512 en la master private key + el chain code, para derivar en claves hijas.')
         + makeCard(9,2,'s9-title','s9-desc',
             '<div class="value-label" style="text-transform:none">HMAC-SHA512(key=&quot;bitcoin seed&quot;, data=rootSeed)</div><div id="v-hmac" class="hl" style="font-size:11px;word-break:break-all">' + (d.hmacOutput||'—') + '</div><small style="color:var(--text2)">→ 64 bytes</small>',
-            'Cadena literal "bitcoin seed" se usa como clave en HMAC-SHA512 dentro de BIP32 para obtener separación de dominio. Esto determina que, usando la misma root seed como input, el resultado sea de este contexto. Que no coincida con el de otros sistemas y/o protocolos. En este sentido, la palabra "bitcoin" es un namespace que hace que el resultado sea único del estándar BIP32.')
+            'Cadena literal <span class="tech-term">"bitcoin seed"</span> se usa como clave en HMAC-SHA512 dentro de BIP32 para obtener separación de dominio. Esto determina que, usando la misma root seed como input, el resultado sea de este contexto. Que no coincida con el de otros sistemas y/o protocolos. En este sentido, la palabra <span class="tech-term">"bitcoin"</span> es un namespace que hace que el resultado sea único del estándar BIP32.')
         + makeCard(10,2,'s10-title','s10-desc',
             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div class="value-label" style="text-transform:none">IL — Master Private Key</div><div id="v-il" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPrivKey||'—') + '</div></div><div><div class="value-label" style="text-transform:none">IR — Chain Code</div><div id="v-ir" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterChainCode||'—') + '</div></div></div>',
             'IL (izquierda, 32B) = clave privada maestra. IR (derecha, 32B) = chain code. El chain code es un valor secreto que forma parte esencial del proceso de derivación en BIP32 (nunca debe exponerse). En el esquema HD, tanto la clave (privada o pública) como el chain code son necesarios para derivar claves hijas; sin el chain code no es posible continuar la derivación.<br><br><span style="color:#f472b6;font-family:monospace;font-size:12px">I = HMAC-SHA512(key="bitcoin seed", data=Root Seed)<br>I = IL || IR</span>')
         + makeCard(11,2,'s11-title','s11-desc',
             '<div><div class="value-label" style="text-transform:none">Master Private Key (IL)</div><div id="v-mpk" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPrivKey||'—') + '</div></div><div style="margin-top:8px"><div class="value-label" style="text-transform:none">Master Public Key (IL·G)</div><div id="v-mpubk" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPubKey||'—') + '</div></div><div style="margin-top:8px"><div class="value-label" style="text-transform:none">Chain Code (IR)</div><div id="v-cc" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterChainCode||'—') + '</div></div>',
-            'Una clave pública se obtiene multiplicando la clave privada por el punto generador G de la curva elíptica secp256k1. Operación unidireccional (imposible de revertir). Un chain code es un valor esencial en cada nodo del árbol HD. No puede deducirse ni cambiarse a partir de la clave pública y/o privada. Elemento necesario para derivar las claves hijas.')
+            'Una clave pública se obtiene multiplicando la clave privada por el punto generador <span class="tech-term">G</span> de la curva elíptica secp256k1. Operación unidireccional (imposible de revertir). Un chain code es un valor esencial en cada nodo del árbol HD. No puede deducirse ni cambiarse a partir de la clave pública y/o privada. Elemento necesario para derivar las claves hijas.')
         + makeCard(12,2,'s12-title','s12-desc',
             '<div class="value-label" style="text-transform:none">Master Node m = (privKey, pubKey, chainCode)</div>'
             + '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;font-size:11px;font-family:monospace">'
@@ -3422,7 +3424,7 @@ const BIP39_WORDLIST = [
             'Estructura completa de un nodo HD:<br><span style="color:#f472b6;font-family:monospace;font-size:12px">privKey(32)+pubKey(33)+chainCode(32)+depth(1)+fingerprint(4)+index(4) = 106 bytes</span><br>El fingerprint del padre son los primeros 4 bytes del HASH160 de la clave pública del padre — permite identificar la relación parent-child sin revelar claves.')
         + makeCard(13,2,'s13-title','s13-desc',
             '<div><div class="value-label">xprv (Clave Privada Extendida)</div><div id="v-xprv" class="hl" style="font-size:11px;word-break:break-all">' + (d.xprv||'—') + '</div></div><div style="margin-top:8px"><div class="value-label">xpub (Clave Pública Extendida)</div><div id="v-xpub" class="hl" style="font-size:11px;word-break:break-all">' + (d.xpub||'—') + '</div></div>',
-            'Serialización de 78 bytes: version(4)+depth(1)+fingerprint(4)+index(4)+chainCode(32)+key(33). xprv: key=0x00||privKey. xpub: key=pubKey comprimida. Luego Base58Check → string portable.<br><br>'
+            'Serialización de <span style="color:var(--text2);font-family:monospace;font-size:11px">78 bytes: version(4)+depth(1)+fingerprint(4)+index(4)+chainCode(32)+key(33). xprv: key=0x00||privKey. xpub: key=pubKey</span> comprimida. Luego Base58Check → string portable.<br><br>'
             + '<b>Version bytes por estándar:</b><br>'
             + '<table style="font-size:11px;border-collapse:collapse;width:100%">'
             + '<tr style="color:var(--text2)"><td style="padding:3px 6px">BIP</td><td style="padding:3px 6px">Privada</td><td style="padding:3px 6px">Pública</td><td style="padding:3px 6px">Dirección</td></tr>'
@@ -3479,8 +3481,8 @@ const BIP39_WORDLIST = [
             'Bech32 detecta errores de tipeo mejor que Base58. Bech32m corrige un bug de Bech32 para witness v1+ (Taproot). Base58Check usa checksum de 4 bytes al final.')
         + makeCard(25,4,'s25-title','s25-desc',
             '<div class="address-result"><div class="addr-label" data-i18n="s25-val-label">' + T['s25-val-label'] + '</div><div id="v-address" class="addr">' + formatAddress(d.address||'bc1q...') + '</div></div>',
-            "La dirección es segura de compartir. No revela la clave privada, el mnemónico, ni el camino de derivación. Para una nueva dirección de recepción, incrementá el índice (0→1→2...).<br><br>"
-            + "<b>Gap limit:</b> Las wallets estándar escanean hasta 20 índices consecutivos sin actividad antes de asumir que no hay más fondos (gap limit = 20). Si saltás índices al recibir fondos, una wallet que restaura desde la seed puede dejar de escanear antes de encontrar tus UTXOs y parecer que 'perdiste' fondos. Siempre usá índices secuenciales al recibir.");
+            "Una dirección se puede compartir. No revela la clave privada, el mnemónico, ni el camino de derivación.<br>Para una nueva dirección de recepción, incrementá el índice (0→1→2...).<br><br>"
+            + "<b>Gap limit:</b> Las wallets estándar escanean hasta 20 índices consecutivos sin actividad antes de asumir que no hay más fondos (gap limit = 20). Si saltás índices al recibir fondos, una wallet que restaura desde la seed puede dejar de escanear antes de encontrar tus UTXOs y parecer que 'perdiste' fondos.");
 
       html = html.replace(/→/g, '<span class="arr">→</span>').replace(/←/g, '<span class="arr">←</span>');
       container.innerHTML = html;
