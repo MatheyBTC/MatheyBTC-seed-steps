@@ -3375,7 +3375,7 @@ const BIP39_WORDLIST = [
             '<div class="value-label" data-i18n="s3-val-label">' + T['s3-val-label'] + '</div><div id="v-bits" style="word-break:break-all;line-height:2">' + bitsHtml + '</div>',
             '128 bits de entropía + 4 bits de checksum = 132 bits totales. 132 ÷ 11 = 12 partes exactas. Cada parte es un número entre 0 y 2047 — el índice de la palabra en el diccionario BIP39.')
         + makeCard(4,1,'s4-title','s4-desc',
-            '<div class="value-label" data-i18n="s4-val-label">' + T['s4-val-label'] + '</div><div id="v-words" style="line-height:2">' + wordsHtml + '</div>',
+            '<div class="value-label" style="text-transform:none" data-i18n="s4-val-label">' + T['s4-val-label'] + '</div><div id="v-words" style="line-height:2">' + wordsHtml + '</div>',
             'El diccionario BIP39 contiene exactamente 2048 palabras (2<sup>11</sup>). Cada palabra está diseñada de modo que sus primeras 3/4 letras son únicas, permitiendo detectar errores de escritura y/o autocompletar a medida que se escriben.')
         + makeCard(5,1,'s5-title','s5-desc',
             '<div class="value-label" style="text-transform:none" data-i18n="s5-val-label">' + T['s5-val-label'] + '</div><div id="v-mnemonic" class="hl" style="font-size:15px;letter-spacing:0.5px;line-height:1.6">' + (d.mnemonic||'—') + '</div><small style="color:var(--text2);margin-top:6px;display:block" data-i18n="s5-note">' + T['s5-note'] + '</small>',
