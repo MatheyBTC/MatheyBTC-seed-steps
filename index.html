@@ -56,8 +56,8 @@
     .phase-tab[data-phase="2"].active { background:#fde047; border-color:#fde047; }
     .phase-tab[data-phase="3"] { color:#f97316; border-color:#f97316; }
     .phase-tab[data-phase="3"].active { background:#f97316; border-color:#f97316; }
-    .phase-tab[data-phase="4"] { color:#f472b6; border-color:#f472b6; }
-    .phase-tab[data-phase="4"].active { background:#f472b6; border-color:#f472b6; }
+    .phase-tab[data-phase="4"] { color:var(--blanco); border-color:var(--blanco); }
+    .phase-tab[data-phase="4"].active { background:var(--blanco); border-color:var(--blanco); }
 
     /* MAIN CONTENT */
     .main { max-width:760px; margin:0 auto; padding:32px 20px 80px; }
@@ -104,7 +104,7 @@
     .value-label {
       font-size:11px; color:var(--text2); margin-bottom:4px;
       font-family:'Segoe UI',sans-serif; font-weight:600;
-      text-transform:uppercase; letter-spacing:0.5px;
+      letter-spacing:0.3px;
     }
     .hl { font-weight:700; }
     .arr { font-size:calc(1em + 2px); line-height:1; display:inline-block; }
@@ -3207,9 +3207,9 @@ const BIP39_WORDLIST = [
         's5-val-label': 'Mnemónico (Recovery Code)', 's5-note': 'Escribir en papel/metal. Se recomiendan 2/3 copias en diferentes ubicaciones.',
         's6-val-label': 'NFKD(mnemónico) + NFKD(passphrase)',
         's8-val-label': 'Root Seed (64 bytes)', 's15-val-label': 'Ruta de Derivación (BIP84)',
-        's18-val-label': 'Child Key Derivation — nivel por nivel',
+        's18-val-label': 'Child Key Derivation — Nivel por Nivel',
         's19-val-label': 'Clave Pública Hija (comprimida, 33 bytes)',
-        's20-val-label': 'Pubkey hija (entrada)', 's21-val-label': 'Pubkey comprimida (33 bytes)',
+        's20-val-label': 'Pubkey hija (entrada)', 's21-val-label': 'Pubkey Comprimida (33 bytes)',
         's25-val-label': "Dirección Bitcoin — m/84'/0'/0'/0/0",
         'err-webcrypto': '⚠️ WebCrypto no disponible. Usá un browser moderno (Chrome, Firefox, Safari).',
         'err-compute': '⚠️ Error en el cálculo. Verificá la consola para más detalles.'
@@ -3423,7 +3423,7 @@ const BIP39_WORDLIST = [
             + '<div id="v-masternode" class="hl" style="margin-top:8px">m / depth:0 / index:0 / fingerprint:00000000</div>',
             'Estructura completa de un nodo HD:<br><span style="color:var(--naranja);font-family:monospace;font-size:12px">privKey(32)+pubKey(33)+chainCode(32)+depth(1)+fingerprint(4)+index(4) = 106 bytes</span><br>El fingerprint del padre son los primeros 4 bytes del HASH160 de la clave pública del padre — permite identificar la relación parent-child sin revelar claves.')
         + makeCard(13,2,'s13-title','s13-desc',
-            '<div><div class="value-label">xprv (clave privada extendida)</div><div id="v-xprv" class="hl" style="font-size:11px;word-break:break-all">' + (d.xprv||'—') + '</div></div><div style="margin-top:8px"><div class="value-label">xpub (clave pública extendida)</div><div id="v-xpub" class="hl" style="font-size:11px;word-break:break-all">' + (d.xpub||'—') + '</div></div>',
+            '<div><div class="value-label">xprv (Clave Privada Extendida)</div><div id="v-xprv" class="hl" style="font-size:11px;word-break:break-all">' + (d.xprv||'—') + '</div></div><div style="margin-top:8px"><div class="value-label">xpub (Clave Pública Extendida)</div><div id="v-xpub" class="hl" style="font-size:11px;word-break:break-all">' + (d.xpub||'—') + '</div></div>',
             'Serialización de 78 bytes: version(4)+depth(1)+fingerprint(4)+index(4)+chainCode(32)+key(33). xprv: key=0x00||privKey. xpub: key=pubKey comprimida. Luego Base58Check → string portable.<br><br>'
             + '<b>Version bytes por estándar:</b><br>'
             + '<table style="font-size:11px;border-collapse:collapse;width:100%">'
