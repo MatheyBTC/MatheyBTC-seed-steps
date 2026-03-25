@@ -108,7 +108,7 @@
     }
     .hl { font-weight:700; }
     .arr { font-size:calc(1em + 2px); line-height:1; display:inline-block; }
-    .tech-term { color:var(--naranja); font-weight:600; }
+    .tech-term { color:#f472b6; font-weight:600; }
     .step-card[data-phase="1"] .hl { color:var(--celeste); }
     .step-card[data-phase="2"] .hl { color:var(--amarillo); }
     .step-card[data-phase="3"] .hl { color:var(--naranja); }
@@ -3339,7 +3339,7 @@ const BIP39_WORDLIST = [
     function highlightTechTerms(container) {
       container.querySelectorAll('.tech-content').forEach(function(tc) {
         tc.innerHTML = tc.innerHTML.replace(
-          /\b(HMAC-SHA512|SHA-256|SHA256|SHA512|RIPEMD-160|RIPEMD160|PBKDF2|secp256k1|BIP-32|BIP-39|BIP-44|BIP-49|BIP-84|BIP-86|BIP32|BIP39|BIP44|BIP49|BIP84|BIP86|NFKD|HASH160|Base58Check|Bech32m|Bech32|CKD|OP_0|OP_PUSHBYTES_20|ECDSA|scriptPubKey|P2WPKH|P2PKH|P2SH|P2TR)\b/g,
+          /\b(CSPRNG|HMAC-SHA512|SHA-256|SHA256|SHA512|RIPEMD-160|RIPEMD160|PBKDF2|secp256k1|BIP-32|BIP-39|BIP-44|BIP-49|BIP-84|BIP-86|BIP32|BIP39|BIP44|BIP49|BIP84|BIP86|NFKD|HASH160|Base58Check|Bech32m|Bech32|CKD|OP_0|OP_PUSHBYTES_20|ECDSA|scriptPubKey|P2WPKH|P2PKH|P2SH|P2TR)\b/g,
           '<span class="tech-term">$1</span>'
         );
       });
@@ -3376,7 +3376,7 @@ const BIP39_WORDLIST = [
         + '</div>'
         + makeCard(1,1,'s1-title','s1-desc',
             '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><div id="v-entropy" style="word-break:break-all;font-family:monospace;font-size:13px;line-height:2;letter-spacing:1px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).map(formatBits).join('&nbsp;') + '</div><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
-            'CSPRNG: da como salida 16 bytes usando <code style="background:#1e293b;padding:1px 5px;border-radius:3px;font-family:monospace;color:#67e8f9;font-size:11px">window.crypto.getRandomValues()</code>. Resultado: 2<sup>128</sup> combinaciones posibles. No predecibles.')
+            'CSPRNG: da como salida 16 bytes usando <code style="background:#1e293b;padding:1px 5px;border-radius:3px;font-family:monospace;color:#f472b6;font-size:11px">window.crypto.getRandomValues()</code>. Resultado: 2<sup>128</sup> combinaciones posibles. No predecibles.')
         + makeCard(2,1,'s2-title','s2-desc',
             '<div class="value-label" data-i18n="s2-val-label">' + T['s2-val-label'] + '</div>'
             + '<div style="font-size:11px;word-break:break-all;margin-bottom:6px"><span class="hl" style="background:rgba(103,232,249,0.25);padding:1px 3px;border-radius:3px" id="v-sha256-byte1">' + (d.sha256Full||'').slice(0,2) + '</span><span style="color:var(--text2)" id="v-sha256-rest">' + (d.sha256Full||'').slice(2) + '</span></div>'
@@ -3395,7 +3395,7 @@ const BIP39_WORDLIST = [
             '<div class="value-label" style="text-transform:none" data-i18n="s6-val-label">' + T['s6-val-label'] + '</div><div id="v-nfkd"><span class="hl">' + (d.mnemonicNFKD||d.mnemonic||'—') + '</span><br><span style="color:var(--text2)">+ passphrase: &quot;<span id="v-passphrase" class="hl">' + (d.passphrase||'') + '</span>&quot;</span></div>',
             'NFKD es normalización Unicode. Ejemplo: la letra <b>é</b> puede representarse como un solo codepoint (U+00E9) y/o como e+acento (U+0065+U+0301) — sin NFKD producen bytes distintos → seeds completamente distintas. NFKD convierte ambas formas a la misma secuencia de bytes antes de PBKDF2. El prefijo literal "mnemonic" en el salt es ASCII fijo el cual no se normaliza (separación de dominio).')
         + makeCard(7,1,'s7-title','s7-desc',
-            '<div class="value-label" style="text-transform:none">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all;margin-bottom:8px">' + (d.rootSeed||'—') + '</div><div style="font-size:12px;color:var(--naranja);font-family:monospace">DK = PBKDF2(PRF, Password, Salt, c, dkLen)</div>',
+            '<div class="value-label" style="text-transform:none">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all;margin-bottom:8px">' + (d.rootSeed||'—') + '</div><div style="font-size:12px;color:#f472b6;font-family:monospace">DK = PBKDF2(PRF, Password, Salt, c, dkLen)</div>',
             'PBKDF2 itera el HMAC-SHA512 2048 veces. Este proceso lento es intencional — hace que los ataques de fuerza bruta sean 2048× más costosos. La seed de 64 bytes es la derivación criptográfica real.')
         + '<div class="phase-header" data-step-start="8"><h2 data-i18n="phase-2-title">' + T['phase-2-title'] + '</h2><p data-i18n-html="phase-2-desc">' + T['phase-2-desc'] + '</p></div>'
         + makeCard(8,2,'s8-title','s8-desc',
@@ -3406,7 +3406,7 @@ const BIP39_WORDLIST = [
             'Cadena literal "bitcoin seed" se usa como clave en HMAC-SHA512 dentro de BIP32 para obtener separación de dominio. Esto determina que, usando la misma root seed como input, el resultado sea de este contexto. Que no coincida con el de otros sistemas y/o protocolos. En este sentido, la palabra "bitcoin" es un namespace que hace que el resultado sea único del estándar BIP32.')
         + makeCard(10,2,'s10-title','s10-desc',
             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div class="value-label" style="text-transform:none">IL — Master Private Key</div><div id="v-il" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPrivKey||'—') + '</div></div><div><div class="value-label" style="text-transform:none">IR — Chain Code</div><div id="v-ir" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterChainCode||'—') + '</div></div></div>',
-            'IL (izquierda, 32B) = clave privada maestra. IR (derecha, 32B) = chain code. El chain code es un valor secreto que forma parte esencial del proceso de derivación en BIP32 (nunca debe exponerse). En el esquema HD, tanto la clave (privada o pública) como el chain code son necesarios para derivar claves hijas; sin el chain code no es posible continuar la derivación.<br><br><span style="color:var(--naranja);font-family:monospace;font-size:12px">I = HMAC-SHA512(key="bitcoin seed", data=Root Seed)<br>I = IL || IR</span>')
+            'IL (izquierda, 32B) = clave privada maestra. IR (derecha, 32B) = chain code. El chain code es un valor secreto que forma parte esencial del proceso de derivación en BIP32 (nunca debe exponerse). En el esquema HD, tanto la clave (privada o pública) como el chain code son necesarios para derivar claves hijas; sin el chain code no es posible continuar la derivación.<br><br><span style="color:#f472b6;font-family:monospace;font-size:12px">I = HMAC-SHA512(key="bitcoin seed", data=Root Seed)<br>I = IL || IR</span>')
         + makeCard(11,2,'s11-title','s11-desc',
             '<div><div class="value-label" style="text-transform:none">Master Private Key (IL)</div><div id="v-mpk" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPrivKey||'—') + '</div></div><div style="margin-top:8px"><div class="value-label" style="text-transform:none">Master Public Key (IL·G)</div><div id="v-mpubk" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterPubKey||'—') + '</div></div><div style="margin-top:8px"><div class="value-label" style="text-transform:none">Chain Code (IR)</div><div id="v-cc" class="hl" style="font-size:11px;word-break:break-all">' + (d.masterChainCode||'—') + '</div></div>',
             'Una clave pública se obtiene multiplicando la clave privada por el punto generador G de la curva elíptica secp256k1. Operación unidireccional (imposible de revertir). Un chain code es un valor esencial en cada nodo del árbol HD. No puede deducirse ni cambiarse a partir de la clave pública y/o privada. Elemento necesario para derivar las claves hijas.')
@@ -3421,7 +3421,7 @@ const BIP39_WORDLIST = [
             + '<span style="background:rgba(250,204,21,0.1);border:1px solid var(--border);padding:3px 6px;border-radius:3px">index<br><span style="color:var(--text2)">4 B</span></span>'
             + '</div>'
             + '<div id="v-masternode" class="hl" style="margin-top:8px">m / depth:0 / index:0 / fingerprint:00000000</div>',
-            'Estructura completa de un nodo HD:<br><span style="color:var(--naranja);font-family:monospace;font-size:12px">privKey(32)+pubKey(33)+chainCode(32)+depth(1)+fingerprint(4)+index(4) = 106 bytes</span><br>El fingerprint del padre son los primeros 4 bytes del HASH160 de la clave pública del padre — permite identificar la relación parent-child sin revelar claves.')
+            'Estructura completa de un nodo HD:<br><span style="color:#f472b6;font-family:monospace;font-size:12px">privKey(32)+pubKey(33)+chainCode(32)+depth(1)+fingerprint(4)+index(4) = 106 bytes</span><br>El fingerprint del padre son los primeros 4 bytes del HASH160 de la clave pública del padre — permite identificar la relación parent-child sin revelar claves.')
         + makeCard(13,2,'s13-title','s13-desc',
             '<div><div class="value-label">xprv (Clave Privada Extendida)</div><div id="v-xprv" class="hl" style="font-size:11px;word-break:break-all">' + (d.xprv||'—') + '</div></div><div style="margin-top:8px"><div class="value-label">xpub (Clave Pública Extendida)</div><div id="v-xpub" class="hl" style="font-size:11px;word-break:break-all">' + (d.xpub||'—') + '</div></div>',
             'Serialización de 78 bytes: version(4)+depth(1)+fingerprint(4)+index(4)+chainCode(32)+key(33). xprv: key=0x00||privKey. xpub: key=pubKey comprimida. Luego Base58Check → string portable.<br><br>'
