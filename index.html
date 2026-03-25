@@ -42,18 +42,19 @@
 
     /* PHASE PROGRESS BAR */
     .phase-bar {
-      position:sticky; top:49px; z-index:99;
+      position:sticky; top:67px; z-index:99;
       background:var(--bg2); border-bottom:1px solid var(--border);
+      box-shadow:0 2px 8px rgba(0,0,0,0.4);
       display:flex; align-items:center; gap:8px;
       padding:8px 24px; overflow-x:auto;
     }
     .phase-tab {
       padding:7px 16px; font-size:13px; font-weight:700;
       border-radius:4px; white-space:nowrap; cursor:pointer;
-      border:2px solid transparent; transition:all 0.2s;
-      opacity:0.72; letter-spacing:0.2px;
+      border:2px solid; transition:all 0.2s;
+      opacity:1; letter-spacing:0.2px;
     }
-    .phase-tab.active { opacity:1; color:#000 !important; }
+    .phase-tab.active { color:#000 !important; }
     .phase-tab[data-phase="1"] { color:var(--celeste); border-color:var(--celeste); }
     .phase-tab[data-phase="1"].active { background:var(--celeste); border-color:var(--celeste); }
     .phase-tab[data-phase="2"] { color:#fde047; border-color:#fde047; }
