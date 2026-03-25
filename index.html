@@ -3162,7 +3162,7 @@ const BIP39_WORDLIST = [
         'security-text': '⚠️ Solo educativo. No uses esta herramienta para uso real. Las claves creadas son visibles en la memoria del browser. Si copiás palabras y/o claves, el portapapeles puede leerse por otras aplicaciones. Nada transmite a un servidor — pero extensiones del browser pueden leer el contenido del sitio.',
         's1-title': 'Entropía Aleatoria', 's2-title': 'Checksum SHA256',
         's3-title': 'Partes de 11 Bits', 's4-title': 'Diccionario BIP39',
-        's5-title': 'Mnemónico', 's6-title': 'Passphrase + NFKD',
+        's5-title': 'Mnemónico', 's6-title': 'Normalizar con NFKD',
         's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed Como Entrada',
         's9-title': 'HMAC-SHA512', 's10-title': 'División IL + IR',
         's11-title': '3 Claves Maestras', 's12-title': 'Master Node (m)',
@@ -3178,7 +3178,7 @@ const BIP39_WORDLIST = [
         's3-desc': '128 bits de entropía + 4 bits de checksum = 132 bits totales. Se dividen en 12 partes de 11 bits cada una.',
         's4-desc': 'Cada segmento (0–2047) apunta a una palabra del diccionario oficial BIP39 de 2048 palabras.',
         's5-desc': 'Las 12 palabras forman el mnemónico, también llamado seed phrase y/o recovery phrase.',
-        's6-desc': 'El mnemónico y la passphrase se normalizan con NFKD para garantizar consistencia entre dispositivos y teclados.',
+        's6-desc': 'El mnemónico (12/24 palabras) + la passphrase (opcional) se normalizan con NFKD para determinar consistencia entre dispositivos + teclados.',
         's7-desc': 'PBKDF2-HMAC-SHA512 itera 2048 veces para derivar los 64 bytes (512 bits) del root seed. Este proceso lento es intencional.',
         's8-desc': 'Los 64 bytes del root seed entran al proceso BIP32 para construir el árbol HD.',
         's9-desc': 'HMAC-SHA512 con la clave literal "Bitcoin seed" transforma el root seed en 64 bytes de material de clave.',
@@ -3230,7 +3230,7 @@ const BIP39_WORDLIST = [
         'security-text': '⚠️ Educational only. Do not use this tool for real use. Created keys are visible in browser memory. If you copy words and/or keys, your clipboard can be read by other applications. Nothing is transmitted to a server — but browser extensions can read the site content.',
         's1-title': 'Random Entropy', 's2-title': 'SHA256 Checksum',
         's3-title': '11-Bit Parts', 's4-title': 'BIP39 Dictionary',
-        's5-title': 'Mnemonic', 's6-title': 'Passphrase + NFKD',
+        's5-title': 'Mnemonic', 's6-title': 'Normalize with NFKD',
         's7-title': 'PBKDF2 → Root Seed', 's8-title': 'Root Seed Input',
         's9-title': 'HMAC-SHA512', 's10-title': 'IL + IR Split',
         's11-title': '3 Master Keys', 's12-title': 'Master Node (m)',
@@ -3246,7 +3246,7 @@ const BIP39_WORDLIST = [
         's3-desc': '128 entropy bits + 4 checksum bits = 132 total bits, split into 12 parts of 11 bits each.',
         's4-desc': 'Each segment (0–2047) maps to a word in the official BIP39 dictionary of 2048 words.',
         's5-desc': 'The 12 words form the mnemonic, also called seed phrase and/or recovery phrase.',
-        's6-desc': 'The mnemonic and passphrase are NFKD-normalized to ensure consistency across devices and keyboards.',
+        's6-desc': 'The mnemonic (12/24 words) + the passphrase (optional) are NFKD-normalized to ensure consistency across devices + keyboards.',
         's7-desc': 'PBKDF2-HMAC-SHA512 iterates 2048 times to derive 64 bytes (512 bits) of root seed. The slowness is intentional.',
         's8-desc': 'The 64-byte root seed enters the BIP32 process to build the HD tree.',
         's9-desc': 'HMAC-SHA512 with the literal key "Bitcoin seed" transforms the root seed into 64 bytes of key material.',
@@ -3381,8 +3381,8 @@ const BIP39_WORDLIST = [
             '<div class="value-label" style="text-transform:none" data-i18n="s5-val-label">' + T['s5-val-label'] + '</div><div id="v-mnemonic" class="hl" style="font-size:15px;letter-spacing:0.5px;line-height:1.6">' + (d.mnemonic||'—') + '</div><small style="color:var(--text2);margin-top:6px;display:block" data-i18n="s5-note">' + T['s5-note'] + '</small>',
             'El mnemónico es la representación para leer la entropía inicial, no de la seed final. Con el mismo mnemónico + distinta passphrase (proceso opcional) → se derivan a diferentes wallets completamente distintas.')
         + makeCard(6,1,'s6-title','s6-desc',
-            '<div class="value-label" data-i18n="s6-val-label">' + T['s6-val-label'] + '</div><div id="v-nfkd"><span class="hl">' + (d.mnemonicNFKD||d.mnemonic||'—') + '</span><br><span style="color:var(--text2)">+ passphrase: &quot;<span id="v-passphrase" class="hl">' + (d.passphrase||'') + '</span>&quot;</span></div>',
-            'NFKD es normalización Unicode. Ejemplo crítico: la letra <b>é</b> puede representarse como un solo codepoint (U+00E9) <i>o</i> como e+acento (U+0065+U+0301) — sin NFKD producen bytes distintos → seeds completamente distintas. NFKD convierte ambas formas a la misma secuencia de bytes antes de PBKDF2. El prefijo literal "mnemonic" en el salt es ASCII fijo y no se normaliza (separación de dominio).')
+            '<div class="value-label" style="text-transform:none" data-i18n="s6-val-label">' + T['s6-val-label'] + '</div><div id="v-nfkd"><span class="hl">' + (d.mnemonicNFKD||d.mnemonic||'—') + '</span><br><span style="color:var(--text2)">+ passphrase: &quot;<span id="v-passphrase" class="hl">' + (d.passphrase||'') + '</span>&quot;</span></div>',
+            'NFKD es normalización Unicode. Ejemplo: la letra <b>é</b> puede representarse como un solo codepoint (U+00E9) y/o como e+acento (U+0065+U+0301) — sin NFKD producen bytes distintos → seeds completamente distintas. NFKD convierte ambas formas a la misma secuencia de bytes antes de PBKDF2. El prefijo literal "mnemonic" en el salt es ASCII fijo el cual no se normaliza (separación de dominio).')
         + makeCard(7,1,'s7-title','s7-desc',
             '<div class="value-label">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
             'PBKDF2 itera el HMAC-SHA512 2048 veces. Este proceso lento es intencional — hace que los ataques de fuerza bruta sean 2048× más costosos. La seed de 64 bytes es la derivación criptográfica real.')
