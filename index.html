@@ -108,6 +108,7 @@
     }
     .hl { font-weight:700; }
     .arr { font-size:calc(1em + 2px); line-height:1; display:inline-block; }
+    .tech-term { color:var(--naranja); font-weight:600; }
     .step-card[data-phase="1"] .hl { color:var(--celeste); }
     .step-card[data-phase="2"] .hl { color:var(--amarillo); }
     .step-card[data-phase="3"] .hl { color:var(--naranja); }
@@ -3335,6 +3336,15 @@ const BIP39_WORDLIST = [
         + '<div class="step-arrow">↓</div>';
     }
 
+    function highlightTechTerms(container) {
+      container.querySelectorAll('.tech-content').forEach(function(tc) {
+        tc.innerHTML = tc.innerHTML.replace(
+          /\b(HMAC-SHA512|SHA-256|SHA256|SHA512|RIPEMD-160|RIPEMD160|PBKDF2|secp256k1|BIP-32|BIP-39|BIP-44|BIP-49|BIP-84|BIP-86|BIP32|BIP39|BIP44|BIP49|BIP84|BIP86|NFKD|HASH160|Base58Check|Bech32m|Bech32|CKD|OP_0|OP_PUSHBYTES_20|ECDSA|scriptPubKey|P2WPKH|P2PKH|P2SH|P2TR)\b/g,
+          '<span class="tech-term">$1</span>'
+        );
+      });
+    }
+
     function renderSteps() {
       var d = currentMode === 'a' ? EXAMPLE : (window.LIVE || EXAMPLE);
       var container = document.getElementById('steps-container');
@@ -3477,6 +3487,7 @@ const BIP39_WORDLIST = [
       html = html.replace(/→/g, '<span class="arr">→</span>').replace(/←/g, '<span class="arr">←</span>');
       container.innerHTML = html;
       applyLang();
+      highlightTechTerms(container);
       setTimeout(initScrollObserver, 50);
     }
 
