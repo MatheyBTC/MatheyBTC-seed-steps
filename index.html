@@ -92,8 +92,8 @@
     .step-card[data-phase="3"] .step-badge { background:var(--naranja); }
     .step-card[data-phase="4"] .step-badge { background:var(--blanco); }
 
-    .step-title { font-size:15px; font-weight:700; }
-    .step-desc { font-size:13px; color:var(--text2); margin-bottom:14px; line-height:1.6; }
+    .step-title { font-size:15px; font-weight:700; color:var(--naranja); }
+    .step-desc { font-size:13px; color:var(--text); margin-bottom:14px; line-height:1.6; }
 
     /* VALUE BOX */
     .value-box {
@@ -108,7 +108,7 @@
     }
     .hl { font-weight:700; }
     .arr { font-size:calc(1em + 2px); line-height:1; display:inline-block; }
-    .tech-term { color:#f472b6; font-weight:600; }
+    .tech-term { color:#f472b6; }
     .step-card[data-phase="1"] .hl { color:var(--celeste); }
     .step-card[data-phase="2"] .hl { color:var(--amarillo); }
     .step-card[data-phase="3"] .hl { color:var(--naranja); }
@@ -3181,13 +3181,13 @@ const BIP39_WORDLIST = [
         's4-desc': 'Cada segmento (0–2047) apunta a una palabra del diccionario oficial BIP39 de 2048 palabras.',
         's5-desc': 'Las 12 palabras forman el mnemónico, también llamado seed phrase y/o recovery phrase.',
         's6-desc': 'El mnemónico (12/24 palabras) + la passphrase (opcional) se normalizan con NFKD para determinar consistencia entre dispositivos + teclados.',
-        's7-desc': 'PBKDF2-HMAC-SHA512 es la función de derivación de claves que transforma el mnemónico en la root seed. Este proceso itera (repite) 2048 veces para derivar los 64 bytes (512 bits) del root seed. Este proceso lento es intencional (para endurecer la derivación).',
+        's7-desc': 'PBKDF2-HMAC-SHA512 es la función de derivación de claves que transforma el mnemónico en la root seed. Este proceso itera (repite) 2048 veces para derivar los 64 bytes del root seed. El proceso lento es intencional (para endurecer la derivación).',
         's8-desc': '64 bytes de entrada es el punto de partida para derivar toda la estructura de claves en BIP32.',
-        's9-desc': 'HMAC-SHA512 con la clave literal "Bitcoin seed" transforma el root seed en 64 bytes de material de clave.',
+        's9-desc': '<span class="tech-term">HMAC-SHA512</span> con la clave literal <span class="tech-term">"Bitcoin seed"</span> transforma el root seed en 64 bytes de material de clave.',
         's10-desc': '64 bytes se dividen: IL (primeros 32) = clave privada maestra, IR (últimos 32) = chain code secreto.',
         's11-desc': 'De IL se deriva la clave privada maestra. De ella, la clave pública comprimida (IL·G). IR es el chain code.',
         's12-desc': 'El Master Node (m) combina 3 elementos: clave privada + clave pública + chain code. Es la raíz del árbol HD determinista.',
-        's13-desc': 'xprv y xpub son las claves extendidas serializadas en 78 bytes y codificadas en Base58Check para portabilidad.',
+        's13-desc': 'xprv + xpub son las claves extendidas serializadas en 78 bytes y codificadas en Base58Check para portabilidad.',
         's14-desc': 'La derivación parte siempre del xprv del master node. Con la misma seed se obtiene siempre el mismo árbol.',
         's15-desc': "La ruta m/84'/0'/0'/0/0 selecciona: BIP84, Bitcoin mainnet, primera cuenta, recepción, primer índice.",
         's16-desc': 'Hardened usa la clave privada del padre — aísla ramas del árbol ante compromisos. Normal usa la pública — permite wallets watch-only.',
@@ -3249,13 +3249,13 @@ const BIP39_WORDLIST = [
         's4-desc': 'Each segment (0–2047) maps to a word in the official BIP39 dictionary of 2048 words.',
         's5-desc': 'The 12 words form the mnemonic, also called seed phrase and/or recovery phrase.',
         's6-desc': 'The mnemonic (12/24 words) + the passphrase (optional) are NFKD-normalized to ensure consistency across devices + keyboards.',
-        's7-desc': 'PBKDF2-HMAC-SHA512 is the key derivation function that transforms the mnemonic into the root seed. This process iterates 2048 times to derive 64 bytes (512 bits) of root seed. The slowness is intentional (to harden the derivation).',
+        's7-desc': 'PBKDF2-HMAC-SHA512 is the key derivation function that transforms the mnemonic into the root seed. This process iterates 2048 times to derive 64 bytes of root seed. The slowness is intentional (to harden the derivation).',
         's8-desc': '64 bytes of input is the starting point to derive the entire key structure in BIP32.',
-        's9-desc': 'HMAC-SHA512 with the literal key "Bitcoin seed" transforms the root seed into 64 bytes of key material.',
+        's9-desc': '<span class="tech-term">HMAC-SHA512</span> with the literal key <span class="tech-term">"Bitcoin seed"</span> transforms the root seed into 64 bytes of key material.',
         's10-desc': '64 bytes are split: IL (first 32) = master private key, IR (last 32) = secret chain code.',
         's11-desc': 'IL becomes the master private key. From it, the compressed public key (IL·G). IR is the chain code.',
         's12-desc': "The Master Node (m) combines 3 elements: private key + public key + chain code. It's the root of the deterministic HD tree.",
-        's13-desc': 'xprv and xpub are the extended keys, serialized in 78 bytes and Base58Check-encoded for portability.',
+        's13-desc': 'xprv + xpub are the extended keys, serialized in 78 bytes and Base58Check-encoded for portability.',
         's14-desc': 'Derivation always starts from the master node xprv. The same seed always produces the same tree.',
         's15-desc': "Path m/84'/0'/0'/0/0 selects: BIP84, Bitcoin mainnet, first account, receive, first index.",
         's16-desc': 'Hardened uses the parent private key — isolates tree branches from compromise. Normal uses the public key — enables watch-only wallets.',
@@ -3337,11 +3337,9 @@ const BIP39_WORDLIST = [
     }
 
     function highlightTechTerms(container) {
-      container.querySelectorAll('.tech-content').forEach(function(tc) {
-        tc.innerHTML = tc.innerHTML.replace(
-          /\b(CSPRNG|HMAC-SHA512|SHA-256|SHA256|SHA512|RIPEMD-160|RIPEMD160|PBKDF2|secp256k1|BIP-32|BIP-39|BIP-44|BIP-49|BIP-84|BIP-86|BIP32|BIP39|BIP44|BIP49|BIP84|BIP86|NFKD|HASH160|Base58Check|Bech32m|Bech32|CKD|OP_0|OP_PUSHBYTES_20|ECDSA|scriptPubKey|P2WPKH|P2PKH|P2SH|P2TR)\b/g,
-          '<span class="tech-term">$1</span>'
-        );
+      var TECH_RE = /\b(CSPRNG|PBKDF2-HMAC-SHA512|HMAC-SHA512|SHA-256|SHA256|SHA512|RIPEMD-160|RIPEMD160|PBKDF2|secp256k1|BIP-32|BIP-39|BIP-44|BIP-49|BIP-84|BIP-86|BIP32|BIP39|BIP44|BIP49|BIP84|BIP86|NFKD|HASH160|Base58Check|Bech32m|Bech32|CKD|OP_0|OP_PUSHBYTES_20|ECDSA|scriptPubKey|P2WPKH|P2PKH|P2SH|P2TR|xprv|xpub|chain\s+code|Master\s+Node|IL·G|árbol\s+HD|claves\s+hijas|clave\s+pública|clave\s+privada|parent-child)\b/g;
+      container.querySelectorAll('.tech-content, .step-desc').forEach(function(el) {
+        el.innerHTML = el.innerHTML.replace(TECH_RE, '<span class="tech-term">$1</span>');
       });
     }
 
@@ -3351,7 +3349,7 @@ const BIP39_WORDLIST = [
       if (!container) return;
       var T = TRANSLATIONS[currentLang];
       var step1Extra = currentMode === 'b'
-        ? '<button onclick="generateEntropy()" style="margin-top:8px;padding:6px 16px;background:var(--celeste);color:#000;border:none;border-radius:6px;font-weight:700;cursor:pointer">🎲 Nueva entropía</button>'
+        ? '<div style="text-align:right"><button onclick="generateEntropy()" style="margin-top:8px;padding:6px 16px;background:var(--celeste);color:#000;border:none;border-radius:6px;font-weight:700;cursor:pointer">🎲 Nueva entropía</button></div>'
         : '';
       var bitsSegs = (d.bits132 || '').split(' ');
       var bitsHtml = bitsSegs.map(function(b, i) {
@@ -3381,7 +3379,7 @@ const BIP39_WORDLIST = [
             '<div class="value-label" data-i18n="s2-val-label">' + T['s2-val-label'] + '</div>'
             + '<div style="font-size:11px;word-break:break-all;margin-bottom:6px"><span class="hl" style="background:rgba(103,232,249,0.25);padding:1px 3px;border-radius:3px" id="v-sha256-byte1">' + (d.sha256Full||'').slice(0,2) + '</span><span style="color:var(--text2)" id="v-sha256-rest">' + (d.sha256Full||'').slice(2) + '</span></div>'
             + '<div style="font-size:12px"><span class="hl" id="v-checksum">' + (d.checksumBit||'0000') + '</span><span style="color:var(--text2)"> <span style="font-size:14px">←</span> primeros 4 bits del primer byte</span></div>',
-            'SHA256 aplica 64 rondas de compresión sobre la entropía de 16 bytes y produce un hash de 32 bytes determinista. Solo se usa el <b>primer byte</b> (resaltado). Ese byte en binario tiene 8 bits — se toman los 4 bits más significativos (MSB) como checksum. Ratio: 4 bits de checksum para 128 bits de entropía = 1 bit de control por cada 32 bits. Si al ingresar el mnemónico hay un error de tipeo, la probabilidad de que el checksum lo detecte es 15/16 (93.75%). Un checksum de 4 bits NO protege contra pérdida o robo — solo detecta errores de transcripción.')
+            'SHA256 aplica 64 rondas de compresión sobre la entropía de 16 bytes como resultado un hash de 32 bytes determinista. Solo se usa el <b>primer byte</b> (resaltado). Ese byte en binario tiene 8 bits — se toman los 4 bits más relevantes (MSB) como checksum. Ratio: 4 bits de checksum para 128 bits de entropía = 1 bit de control por cada 32 bits. Si existe un error de tipeo, la probabilidad de que el checksum lo detecte es 15/16 (93.75%). Un checksum solo detecta errores de transcripción.')
         + makeCard(3,1,'s3-title','s3-desc',
             '<div class="value-label" data-i18n="s3-val-label">' + T['s3-val-label'] + '</div><div id="v-bits" style="word-break:break-all;line-height:2">' + bitsHtml + '</div>',
             '128 bits de entropía + 4 bits de checksum = 132 bits totales. 132 ÷ 11 = 12 partes exactas. Cada parte es un número entre 0 y 2047 — el índice de la palabra en el diccionario BIP39.')
@@ -3400,7 +3398,7 @@ const BIP39_WORDLIST = [
         + '<div class="phase-header" data-step-start="8"><h2 data-i18n="phase-2-title">' + T['phase-2-title'] + '</h2><p data-i18n-html="phase-2-desc">' + T['phase-2-desc'] + '</p></div>'
         + makeCard(8,2,'s8-title','s8-desc',
             '<div class="value-label" style="text-transform:none" data-i18n="s8-val-label">' + T['s8-val-label'] + '</div><div id="v-rootseed-2" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
-            'Una root seed de 512 bits se usa como entrada en el proceso BIP32. A partir de ese punto se trabaja dentro del esquema de árbol jerárquico determinístico (HD): la seed se transforma mediante HMAC-SHA512 en la master private key + el chain code, para derivar en claves hijas.')
+            'Una root seed de <span class="tech-term">512 bits</span> (64 bytes) se usa como entrada en el proceso BIP32. A partir de ese punto se trabaja dentro del esquema de árbol jerárquico determinístico (HD): la seed se transforma mediante HMAC-SHA512 en la master private key + el chain code, para derivar en claves hijas.')
         + makeCard(9,2,'s9-title','s9-desc',
             '<div class="value-label" style="text-transform:none">HMAC-SHA512(key=&quot;bitcoin seed&quot;, data=rootSeed)</div><div id="v-hmac" class="hl" style="font-size:11px;word-break:break-all">' + (d.hmacOutput||'—') + '</div><small style="color:var(--text2)">→ 64 bytes</small>',
             'Cadena literal "bitcoin seed" se usa como clave en HMAC-SHA512 dentro de BIP32 para obtener separación de dominio. Esto determina que, usando la misma root seed como input, el resultado sea de este contexto. Que no coincida con el de otros sistemas y/o protocolos. En este sentido, la palabra "bitcoin" es un namespace que hace que el resultado sea único del estándar BIP32.')
