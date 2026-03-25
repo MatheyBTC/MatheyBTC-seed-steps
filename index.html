@@ -185,7 +185,7 @@
       <button class="toggle-btn active" id="btn-mode-a" onclick="setMode('a')" data-i18n="mode-a">Ejemplo</button>
       <button class="toggle-btn" id="btn-mode-b" onclick="setMode('b')" data-i18n="mode-b" style="border-color:var(--naranja);color:var(--naranja)">Generar</button>
       <button class="toggle-btn" id="btn-lang" onclick="toggleLang()">EN</button>
-      <button id="btn-nueva-entropia" onclick="generateEntropy()" style="display:none;padding:5px 16px;background:var(--celeste);color:#000;border:none;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer">🎲 Nueva entropía</button>
+      <button id="btn-nueva-entropia" onclick="generateEntropy()" style="display:none;padding:5px 16px;background:var(--celeste);color:#000;border:none;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer">Nueva</button>
     </div>
   </header>
 
@@ -3504,6 +3504,13 @@ const BIP39_WORDLIST = [
       container.innerHTML = html;
       applyLang();
       highlightTechTerms(container);
+      // Colapsar todas las fases al inicio
+      [1,2,3,4].forEach(function(n){
+        var c = document.getElementById('phase-content-'+n);
+        var h = document.querySelector('.phase-header[data-phase-id="'+n+'"]');
+        if (c) c.classList.add('ph-collapsed');
+        if (h) h.classList.add('ph-collapsed');
+      });
       setTimeout(initScrollObserver, 50);
     }
 
@@ -3531,12 +3538,25 @@ const BIP39_WORDLIST = [
 
     function initScrollObserver() {
       var phases = [
-        { tab: 'ptab-1', steps: [1,2,3,4,5,6,7] },
-        { tab: 'ptab-2', steps: [8,9,10,11,12,13] },
-        { tab: 'ptab-3', steps: [14,15,16,17,18,19] },
-        { tab: 'ptab-4', steps: [20,21,22,23,24,25] }
+        { tab: 'ptab-1', steps: [1,2,3,4,5,6,7],    phaseId: 1 },
+        { tab: 'ptab-2', steps: [8,9,10,11,12,13],  phaseId: 2 },
+        { tab: 'ptab-3', steps: [14,15,16,17,18,19], phaseId: 3 },
+        { tab: 'ptab-4', steps: [20,21,22,23,24,25], phaseId: 4 }
       ];
-      var observer = new IntersectionObserver(function(entries) {
+
+      // Observer en phase-headers: expande la fase cuando el header entra al viewport
+      var headerObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var phaseId = parseInt(entry.target.dataset.phaseId);
+            if (phaseId) expandPhase(phaseId);
+          }
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('.phase-header[data-phase-id]').forEach(function(h){ headerObserver.observe(h); });
+
+      // Observer en step-cards: actualiza el tab activo de la barra
+      var cardObserver = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             var stepNum = parseInt(entry.target.dataset.step);
@@ -3552,7 +3572,7 @@ const BIP39_WORDLIST = [
           }
         });
       }, { threshold: 0.3, rootMargin: '-80px 0px 0px 0px' });
-      document.querySelectorAll('.step-card').forEach(function(card){ observer.observe(card); });
+      document.querySelectorAll('.step-card').forEach(function(card){ cardObserver.observe(card); });
     }
 
     document.addEventListener('DOMContentLoaded', async function() {
