@@ -107,6 +107,7 @@
       text-transform:uppercase; letter-spacing:0.5px;
     }
     .hl { font-weight:700; }
+    .arr { font-size:calc(1em + 2px); line-height:1; display:inline-block; }
     .step-card[data-phase="1"] .hl { color:var(--celeste); }
     .step-card[data-phase="2"] .hl { color:var(--amarillo); }
     .step-card[data-phase="3"] .hl { color:var(--naranja); }
@@ -3384,7 +3385,7 @@ const BIP39_WORDLIST = [
             '<div class="value-label" style="text-transform:none" data-i18n="s6-val-label">' + T['s6-val-label'] + '</div><div id="v-nfkd"><span class="hl">' + (d.mnemonicNFKD||d.mnemonic||'—') + '</span><br><span style="color:var(--text2)">+ passphrase: &quot;<span id="v-passphrase" class="hl">' + (d.passphrase||'') + '</span>&quot;</span></div>',
             'NFKD es normalización Unicode. Ejemplo: la letra <b>é</b> puede representarse como un solo codepoint (U+00E9) y/o como e+acento (U+0065+U+0301) — sin NFKD producen bytes distintos → seeds completamente distintas. NFKD convierte ambas formas a la misma secuencia de bytes antes de PBKDF2. El prefijo literal "mnemonic" en el salt es ASCII fijo el cual no se normaliza (separación de dominio).')
         + makeCard(7,1,'s7-title','s7-desc',
-            '<div class="value-label">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div style="font-size:12px;color:#67e8f9;font-family:monospace;margin-bottom:8px">DK = PBKDF2(PRF, Password, Salt, c, dkLen)</div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all">' + (d.rootSeed||'—') + '</div>',
+            '<div class="value-label" style="text-transform:none">PBKDF2-HMAC-SHA512 → Root Seed</div><div style="color:var(--text2);font-size:12px;margin-bottom:8px">iterations: <span class="hl">2048</span> · dkLen: <span class="hl">64 bytes</span></div><div id="v-rootseed" class="hl" style="font-size:11px;word-break:break-all;margin-bottom:8px">' + (d.rootSeed||'—') + '</div><div style="font-size:12px;color:var(--naranja);font-family:monospace">DK = PBKDF2(PRF, Password, Salt, c, dkLen)</div>',
             'PBKDF2 itera el HMAC-SHA512 2048 veces. Este proceso lento es intencional — hace que los ataques de fuerza bruta sean 2048× más costosos. La seed de 64 bytes es la derivación criptográfica real.')
         + '<div class="phase-header" data-step-start="8"><h2 data-i18n="phase-2-title">' + T['phase-2-title'] + '</h2><p data-i18n-html="phase-2-desc">' + T['phase-2-desc'] + '</p></div>'
         + makeCard(8,2,'s8-title','s8-desc',
@@ -3473,6 +3474,7 @@ const BIP39_WORDLIST = [
             "La dirección es segura de compartir. No revela la clave privada, el mnemónico, ni el camino de derivación. Para una nueva dirección de recepción, incrementá el índice (0→1→2...).<br><br>"
             + "<b>Gap limit:</b> Las wallets estándar escanean hasta 20 índices consecutivos sin actividad antes de asumir que no hay más fondos (gap limit = 20). Si saltás índices al recibir fondos, una wallet que restaura desde la seed puede dejar de escanear antes de encontrar tus UTXOs y parecer que 'perdiste' fondos. Siempre usá índices secuenciales al recibir.");
 
+      html = html.replace(/→/g, '<span class="arr">→</span>').replace(/←/g, '<span class="arr">←</span>');
       container.innerHTML = html;
       applyLang();
       setTimeout(initScrollObserver, 50);
