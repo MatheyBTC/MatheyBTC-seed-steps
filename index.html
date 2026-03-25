@@ -192,10 +192,10 @@
 
   <!-- PHASE PROGRESS BAR -->
   <div class="phase-bar">
-    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1" onclick="expandPhase(1);setTimeout(function(){var el=document.querySelector('.phase-header[data-phase-id=\"1\"]');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-130,behavior:'smooth'})}},50)">Seed BIP39</div>
-    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2" onclick="expandPhase(2);setTimeout(function(){var el=document.querySelector('.phase-header[data-phase-id=\"2\"]');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-130,behavior:'smooth'})}},50)">Árbol HD</div>
-    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3" onclick="expandPhase(3);setTimeout(function(){var el=document.querySelector('.phase-header[data-phase-id=\"3\"]');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-130,behavior:'smooth'})}},50)">Derivación</div>
-    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4" onclick="expandPhase(4);setTimeout(function(){var el=document.querySelector('.phase-header[data-phase-id=\"4\"]');if(el){window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-130,behavior:'smooth'})}},50)">Dirección</div>
+    <div class="phase-tab active" data-phase="1" id="ptab-1" data-i18n="phase-1" onclick="scrollToPhase(1)">Seed BIP39</div>
+    <div class="phase-tab" data-phase="2" id="ptab-2" data-i18n="phase-2" onclick="scrollToPhase(2)">Árbol HD</div>
+    <div class="phase-tab" data-phase="3" id="ptab-3" data-i18n="phase-3" onclick="scrollToPhase(3)">Derivación</div>
+    <div class="phase-tab" data-phase="4" id="ptab-4" data-i18n="phase-4" onclick="scrollToPhase(4)">Dirección</div>
   </div>
 
   <main class="main">
@@ -3527,6 +3527,14 @@ const BIP39_WORDLIST = [
           header.scrollIntoView({ behavior:'smooth', block:'start' });
         }, 50);
       }
+    }
+
+    function scrollToPhase(n) {
+      expandPhase(n);
+      setTimeout(function() {
+        var el = document.querySelector('.phase-header[data-phase-id="' + n + '"]');
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: 'smooth' });
+      }, 50);
     }
 
     function expandPhase(phaseId) {
