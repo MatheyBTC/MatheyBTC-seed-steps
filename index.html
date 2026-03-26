@@ -164,6 +164,21 @@
     .address-result .addr .ac2 { color:#94a3b8; }
     .address-result .addr-label { font-size:11px; color:var(--text2); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
 
+    /* MANUAL MODE */
+    .manual-bit {
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.1s;
+      padding: 0 1px;
+    }
+    .manual-bit:hover { background: rgba(251,146,60,0.25); }
+    #v-entropy.manual-mode {
+      border: 1px solid var(--naranja);
+      border-radius: 4px;
+      padding: 6px 8px;
+      outline: none;
+    }
+
     /* MOBILE */
     @media (max-width:600px) {
       .header { padding:8px 12px; }
@@ -185,6 +200,7 @@
     <div class="header-controls">
       <button class="toggle-btn active" id="btn-mode-a" onclick="setMode('a')" data-i18n="mode-a">Ejemplo</button>
       <button class="toggle-btn" id="btn-mode-b" onclick="setMode('b')" data-i18n="mode-b" style="border-color:var(--naranja);color:var(--naranja)">Generar</button>
+      <button class="toggle-btn" id="btn-manual" onclick="enterManualMode()" style="border-color:#fb923c;color:#fb923c;display:none">Manual</button>
       <button class="toggle-btn" id="btn-lang" onclick="toggleLang()">EN</button>
       <button id="btn-nueva-entropia" onclick="generateEntropy()" style="display:none;padding:5px 16px;background:var(--celeste);color:#000;border:none;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer">Nueva</button>
     </div>
@@ -3002,10 +3018,70 @@ const BIP39_WORDLIST = [
   <script>
     let currentLang = 'es';
     let currentMode = 'a';
+    let manualMode = false;
+    let manualBits = ''; // 128-char string of '0' and '1'
 
-    function formatBits(bits) {
+    function exitManualMode() {
+      manualMode = false;
+      manualBits = '';
+      var btn = document.getElementById('btn-manual');
+      if (btn) { btn.textContent = 'Manual'; btn.classList.remove('active'); }
+    }
+
+    async function enterManualMode() {
+      if (!window.LIVE) return;
+      // Toggle: if already in manual mode, switch back to random
+      if (manualMode) {
+        exitManualMode();
+        await generateEntropy();
+        return;
+      }
+      manualMode = true;
+      manualBits = '0'.repeat(128);
+      var btn = document.getElementById('btn-manual');
+      if (btn) { btn.textContent = 'Aleatorio'; btn.classList.add('active'); }
+      var passphrase = document.getElementById('passphrase-input').value;
+      try {
+        var hex = manualBitsToHex();
+        window.LIVE = await computeAll(hex, passphrase);
+        renderSteps();
+        // Expand phase 1 so the entropy field is visible
+        expandPhase(1);
+      } catch(e) { console.error('[MatheyBTC] enterManualMode failed:', e); }
+    }
+
+    function manualBitsToHex() {
+      var result = '';
+      for (var i = 0; i < 16; i++) {
+        var byteStr = manualBits.slice(i * 8, i * 8 + 8);
+        result += parseInt(byteStr, 2).toString(16).padStart(2, '0');
+      }
+      return result;
+    }
+
+    async function toggleBit(globalIndex) {
+      if (!manualMode) return;
+      var bits = manualBits.split('');
+      bits[globalIndex] = bits[globalIndex] === '0' ? '1' : '0';
+      manualBits = bits.join('');
+      var passphrase = document.getElementById('passphrase-input').value;
+      try {
+        var hex = manualBitsToHex();
+        window.LIVE = await computeAll(hex, passphrase);
+        renderSteps();
+        expandPhase(1);
+      } catch(e) { console.error('[MatheyBTC] toggleBit failed:', e); }
+    }
+
+    function formatBits(bits, globalOffset) {
       if (!bits) return '';
-      return bits.split('').map(function(b) {
+      return bits.split('').map(function(b, i) {
+        if (manualMode && globalOffset !== undefined) {
+          var idx = globalOffset + i;
+          return b === '1'
+            ? '<span class="manual-bit" onclick="toggleBit(' + idx + ')" style="color:#f1f5f9;font-weight:600">1</span>'
+            : '<span class="manual-bit" onclick="toggleBit(' + idx + ')" style="color:#64748b">0</span>';
+        }
         return b === '1'
           ? '<span style="color:#f1f5f9;font-weight:600">1</span>'
           : '<span style="color:#64748b">0</span>';
@@ -3136,6 +3212,7 @@ const BIP39_WORDLIST = [
 
     async function generateEntropy() {
       if (!window.crypto || !window.crypto.getRandomValues) return;
+      exitManualMode();
       var bytes = new Uint8Array(16);
       window.crypto.getRandomValues(bytes);
       var entropyHex = toHex(bytes);
@@ -3318,12 +3395,15 @@ const BIP39_WORDLIST = [
     }
 
     function setMode(m) {
+      if (m !== 'b') exitManualMode();
       currentMode = m;
       document.getElementById('btn-mode-a').classList.toggle('active', m === 'a');
       document.getElementById('btn-mode-b').classList.toggle('active', m === 'b');
       document.getElementById('security-banner').classList.toggle('visible', m === 'b');
       var btnEntropia = document.getElementById('btn-nueva-entropia');
       if (btnEntropia) btnEntropia.style.display = m === 'b' ? 'inline-block' : 'none';
+      var btnManual = document.getElementById('btn-manual');
+      if (btnManual) btnManual.style.display = m === 'b' ? 'inline-block' : 'none';
       renderSteps();
     }
 
@@ -3385,7 +3465,7 @@ const BIP39_WORDLIST = [
         + '</div>'
         + '<div class="phase-content" id="phase-content-1">'
         + makeCard(1,1,'s1-title','s1-desc',
-            '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><div id="v-entropy" style="word-break:break-all;font-family:monospace;font-size:13px;line-height:2;letter-spacing:1px">' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).map(formatBits).join('&nbsp;') + '</div><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
+            '<div class="value-label" data-i18n="s1-val-label">' + T['s1-val-label'] + '</div><div id="v-entropy" style="word-break:break-all;font-family:monospace;font-size:13px;line-height:2;letter-spacing:1px' + (manualMode ? ';border:1px solid var(--naranja);border-radius:4px;padding:6px 8px' : '') + '"' + (manualMode ? ' title="Hacé click en cualquier bit para cambiarlo"' : '') + '>' + ((d.entropyBits||'').match(/.{1,8}/g)||[]).map(function(b,i){ return formatBits(b, i*8); }).join('&nbsp;') + '</div><small style="color:var(--text2)" data-i18n="s1-note">' + T['s1-note'] + '</small>' + step1Extra,
             'CSPRNG: da como salida 16 bytes usando <code style="background:#1e293b;padding:1px 5px;border-radius:3px;font-family:monospace;color:#f472b6;font-size:11px">window.crypto.getRandomValues()</code>. Resultado: 2<sup>128</sup> combinaciones posibles. No predecibles.')
         + makeCard(2,1,'s2-title','s2-desc',
             '<div class="value-label" data-i18n="s2-val-label">' + T['s2-val-label'] + '</div>'
@@ -3394,7 +3474,7 @@ const BIP39_WORDLIST = [
             'SHA256 aplica 64 rondas de compresión sobre la entropía de 16 bytes como resultado un hash de 32 bytes determinista. Solo se usa el <b>primer byte</b> (resaltado). Ese byte en binario tiene 8 bits — se toman los 4 bits más relevantes (MSB) como <span style="color:#f472b6">checksum</span>. Ratio: 4 bits de <span style="color:#f472b6">checksum</span> para 128 bits de entropía = 1 bit de control por cada 32 bits. Si existe un error de tipeo, la probabilidad de que el <span style="color:#f472b6">checksum</span> lo detecte es 15/16. Un <span style="color:#f472b6">checksum</span> solo detecta errores de transcripción.')
         + makeCard(3,1,'s3-title','s3-desc',
             '<div class="value-label" data-i18n="s3-val-label">' + T['s3-val-label'] + '</div><div id="v-bits" style="word-break:break-all;line-height:2">' + bitsHtml + '</div>',
-            '128 bits de entropía + 4 bits de checksum = 132 bits totales. 132 ÷ 11 = 12 partes exactas. Cada parte es un número entre 0 y 2047 — el índice de la palabra en el diccionario BIP39.')
+            '128 bits de entropía + 4 bits de checksum = 132 bits totales. 132 ÷ 11 = 12 partes exactas.<br>Cada parte es un número entre 0 a 2047 — el índice de la palabra en el diccionario estándar BIP39.<br><span style="color:#f59e0b">Nota: el diccionario tiene 2048 palabras (2<sup>11</sup>). Podés encontrar el listado numerado del 1 al 2048.</span>')
         + makeCard(4,1,'s4-title','s4-desc',
             '<div class="value-label" style="text-transform:none" data-i18n="s4-val-label">' + T['s4-val-label'] + '</div><div id="v-words" style="line-height:2">' + wordsHtml + '</div>',
             'El diccionario BIP39 contiene exactamente 2048 palabras (2<sup>11</sup>). Las primeras <b>4 letras</b> de cada palabra son únicas dentro de la lista — permite autocompletar y detectar errores de escritura con solo 4 caracteres.')
